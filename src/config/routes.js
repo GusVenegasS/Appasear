@@ -8,7 +8,7 @@ export const screens = [
     name: 'Brigadas',
     component: Brigadas,
     options: {
-      tabBarIcon: 'home-outline', // Nombre del icono para Home
+      tabBarIcon: 'home', // Nombre del icono para Home
     },
     rol: 'admin'
   },
@@ -16,7 +16,7 @@ export const screens = [
     name: 'Usuarios',
     component: Usuarios,
     options: {
-      tabBarIcon: 'person-outline', // Nombre del icono para Usuarios
+      tabBarIcon: 'users', // Nombre del icono para Usuarios
     },
     rol: 'admin'
   },
@@ -24,7 +24,7 @@ export const screens = [
     name: 'Configuración',
     component: Configuracion,
     options: {
-      tabBarIcon: 'settings-outline', // Nombre del icono para Configuracion
+      tabBarIcon: 'settings', // Nombre del icono para Configuracion
     },
     rol: 'admin'
   },

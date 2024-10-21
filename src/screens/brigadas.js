@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { Calendar } from 'react-native-calendars';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Brigadas = () => {
     const [expandedDay, setExpandedDay] = useState(null);
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 16,
         marginBottom: 16,
-        shadowColor: '#000',
         borderColor: '#008EB6',
         borderWidth: 2,
         shadowOffset: { width: 0, height: 2 },

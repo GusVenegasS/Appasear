@@ -2,7 +2,7 @@
 import React, { useState } from 'react'; // Asegúrate de importar useState
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Feather.js';
 import { screens } from './config/routes.js';
 import Colores from './styles/colores.js'; 
 import CustomHeader from './components/header.js';// Importa el nuevo componente
