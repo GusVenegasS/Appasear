@@ -26,6 +26,21 @@ const TextStyles = StyleSheet.create({
     color: '#000000', // Cambia el color según tus necesidades
     fontFamily: 'Nunito-Regular',
   },
+  buttonText: {
+    fontSize: 12,
+    color: '#008EB6', // Cambia el color según tus necesidades
+    fontFamily: 'Nunito-SemiBold',
+  },
+  tituloCard: {
+    fontSize: 18,
+    color: '#000000', // Cambia el color según tus necesidades
+    fontFamily: 'Nunito-Bold',
+  },
+  estadoCard: {
+    fontSize: 15,
+    color: '#008EB6', // Cambia el color según tus necesidades
+    fontFamily: 'Nunito-Regular',
+  },
 });
 
 export default TextStyles;

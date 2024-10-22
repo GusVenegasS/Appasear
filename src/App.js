@@ -10,7 +10,7 @@ import CustomHeader from './components/header.js';// Importa el nuevo componente
 // Crear Tab Navigator
 const App = () => {
   const Tab = createBottomTabNavigator();
-  const [rol, setRol] = useState("admin"); // Puedes cambiar el rol aquí para probar
+  const [rol, setRol] = useState("user"); // Puedes cambiar el rol aquí para probar
 
   // Define las pantallas para cada rol
   const adminScreens = screens.filter(screen => screen.rol === 'admin');
