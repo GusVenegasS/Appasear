@@ -2,7 +2,7 @@
 import Brigadas from '../screens/brigadas';
 import Usuarios from '../screens/usuarios';
 import Configuracion from '../screens/configuraciones';
-
+import Usuario from '../screens/usuario'
 export const screens = [
   {
     name: 'Brigadas',
@@ -24,8 +24,16 @@ export const screens = [
     name: 'Configuración',
     component: Configuracion,
     options: {
-      tabBarIcon: 'settings', // Nombre del icono para Configuracion
+      tabBarIcon: 'settings',
     },
     rol: 'admin'
   },
+  {
+    name: 'Información estudiante',
+    component: Usuario,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  }
 ];

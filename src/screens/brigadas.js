@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import { Calendar } from 'react-native-calendars';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Feather';
+
+LocaleConfig.locales['es'] = {
+    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+    today: 'Hoy'
+};
+LocaleConfig.defaultLocale = 'es';
 
 const Brigadas = () => {
     const [expandedDay, setExpandedDay] = useState(null);
@@ -18,6 +27,25 @@ const Brigadas = () => {
         }));
     };
 
+    const getDisabledDays = (day) => {
+        const disabledDays = {};
+        const weekDays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const targetDayIndex = weekDays.indexOf(day);
+
+        // Deshabilitar todos los días excepto el día de la brigada
+        let date = new Date();
+        date.setUTCHours(date.getUTCHours() - 5)
+        for (let i = 0; i < 365; i++) { // Ajusta 365 según tus necesidades
+            const dateString = date.toISOString().split('T')[0];
+            if (date.getDay() !== targetDayIndex) {
+                disabledDays[dateString] = { disabled: true };
+            }
+            date.setDate(date.getDate() + 1);
+        }
+
+        return disabledDays;
+    };
+
     return (
         <ScrollView style={styles.container}>
             {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"].map((day) => (
@@ -30,25 +58,27 @@ const Brigadas = () => {
                             <View style={styles.optionContainer}>
                                 <Text style={styles.option}>Limpieza</Text>
                                 <TouchableOpacity onPress={() => toggleCalendar(day, 'Limpieza')}>
-                                    <Icon name="calendar" size={24} color="#000" />
+                                    <Icon name="calendar" size={24} color="#008EB6" />
                                 </TouchableOpacity>
                             </View>
                             {showCalendar[`${day}-Limpieza`] && (
                                 <Calendar
                                     style={styles.calendar}
-                                    onDayPress={(day) => console.log('Limpieza - Día seleccionado:', day)}
+                                    onDayPress={(selectedDay) => console.log('Limpieza - Día seleccionado:', selectedDay)}
+                                    markedDates={getDisabledDays(day)}
                                 />
                             )}
                             <View style={styles.optionContainer}>
                                 <Text style={styles.option}>Paseo</Text>
                                 <TouchableOpacity onPress={() => toggleCalendar(day, 'Paseo')}>
-                                    <Icon name="calendar" size={24} color="#000" />
+                                    <Icon name="calendar" size={24} color="#008EB6" />
                                 </TouchableOpacity>
                             </View>
                             {showCalendar[`${day}-Paseo`] && (
                                 <Calendar
                                     style={styles.calendar}
-                                    onDayPress={(day) => console.log('Paseo - Día seleccionado:', day)}
+                                    onDayPress={(selectedDay) => console.log('Paseo - Día seleccionado:', selectedDay)}
+                                    markedDates={getDisabledDays(day)}
                                 />
                             )}
                         </View>

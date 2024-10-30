@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather.js';
 import { screens } from './config/routes.js';
-import Colores from './styles/colores.js'; 
+import Colores from './styles/colores.js';
 import CustomHeader from './components/header.js';// Importa el nuevo componente
 
 // Crear Tab Navigator
@@ -39,6 +39,7 @@ const App = () => {
             name={screen.name}
             component={screen.component}
             options={{
+              tabBarButton: screen.options.tabBarButton,
               tabBarIcon: ({ color, size }) => (
                 <Icon name={screen.options.tabBarIcon} size={size} color={color} />
               ),
