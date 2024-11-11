@@ -2,7 +2,9 @@
 import Brigadas from '../screens/brigadas';
 import Usuarios from '../screens/usuarios';
 import Configuracion from '../screens/configuraciones';
-import Usuario from '../screens/usuario'
+import Usuario from '../screens/usuario';
+import Periodo from '../screens/periodo';
+import Tarea from '../screens/detalleTarea';
 export const screens = [
   {
     name: 'Brigadas',
@@ -31,6 +33,22 @@ export const screens = [
   {
     name: 'Información estudiante',
     component: Usuario,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  },
+  {
+    name: 'Período académico',
+    component: Periodo,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  },
+  {
+    name: 'Detalle tarea',
+    component: Tarea,
     options: {
       tabBarButton: () => null, tabBarIcon: 'info'
     },

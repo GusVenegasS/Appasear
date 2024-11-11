@@ -1,18 +1,46 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import LottieView from 'lottie-react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
+import API from "../services/api-services";
 
 const UserScreen = ({ navigation }) => {
-  const users = [
-    { id: '1', name: 'Gustavo Venegas' },
-    { id: '2', name: 'Carolina Bravo' },
-    { id: '3', name: 'Daniel Vargas' },
-    { id: '4', name: 'Samantha Vilaña' },
-    { id: '5', name: 'Juan Pablo del Hierro' },
-    { id: '6', name: 'Steeven Panchi' },
-    { id: '7', name: 'Ronnie Gonzalez' },
-    // Agrega más usuarios según sea necesario
-  ];
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [apiMessage, setApiMessage] = useState('');
+  const [animationSource, setAnimationSource] = useState(require('../assets/animaciones/error.json'));
+  const periodo = "2024-B";
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        setLoading(true);
+        try {
+          const respuesta = await API.obtenerUsuarios(periodo);  // Aquí va la URL de tu API
+          console.log(respuesta);
+          if (respuesta.status === 404) {
+            setApiMessage(respuesta.message); // no hay brigadas
+            setAnimationSource(require('../assets/animaciones/error.json'));
+          } else if (respuesta.status === 500) {
+            setApiMessage(respuesta.message); // esta levantado pero no se obtuvo respuesta
+            setAnimationSource(require('../assets/animaciones/error_500.json'));
+          } else {
+            setUsers(respuesta);
+            setApiMessage('');
+          }
+        } catch (error) {
+          console.error('Error fetching users:', error);
+          setApiMessage('Upss! Algo salió mal'); // el servidor está caído
+          setAnimationSource(require('../assets/animaciones/serverError.json'));
+        } finally {
+          setLoading(false);  // Finalizamos la carga cuando obtenemos los datos
+        }
+      };
+      fetchData();
+    }, [])
+  );
 
   const navigateToDetails = (user) => {
     navigation.navigate('Información estudiante', { user });
@@ -20,14 +48,37 @@ const UserScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {users.map((user) => (
-        <View key={user.id} style={styles.card}>
-          <Text style={styles.userName}>{user.name}</Text>
-          <TouchableOpacity onPress={() => navigateToDetails(user)}>
-            <Icon name="eye" size={24} color="#008EB6" />
-          </TouchableOpacity>
+      {loading ? (
+        <View style={styles.animationContainer}>
+          <LottieView
+            source={require('../assets/animaciones/cargando.json')}
+            autoPlay
+            loop
+            style={styles.animation}
+          />
         </View>
-      ))}
+      ) : apiMessage ? (
+        <View style={styles.centeredView}>
+          <LottieView
+            source={animationSource}
+            autoPlay
+            loop
+            style={styles.animation}
+          />
+          <Text style={[TextStyles.title3, TextStyles.centeredText]}>{apiMessage}</Text>
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {users.map((user) => (
+            <View key={user._id} style={styles.card}>
+              <Text style={[TextStyles.cuerpo, styles.cardText]}>{user.nombre}</Text>
+              <TouchableOpacity onPress={() => navigateToDetails(user)}>
+                <Icon name="eye" size={24} color="#008EB6" />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -35,31 +86,44 @@ const UserScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'flex-start', // Aseguramos que los elementos no estén centrados
+    alignItems: 'stretch', // Alineamos todos los elementos a lo largo de la pantalla
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  animationContainer: {
+    flex: 1,
+    justifyContent: 'center', // Centramos la animación de carga
+    alignItems: 'center',
+    marginTop: 20, // Margen superior para evitar que se pegue al borde
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20, // Evitar que se quede pegado a la parte superior
+  },
+  animation: {
+    width: 200,
+    height: 200,
+  },
+  scrollContainer: {
+    padding: 20, // Agregamos padding general a las tarjetas
+    paddingBottom: 20, // Espacio extra al final
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    borderColor: '#008EB6',
+    flexDirection: 'row', // Alineación horizontal
+    justifyContent: 'space-between', // Espacio entre el texto y el ícono
+    alignItems: 'center', // Alineación vertical
+    width: '100%',
+    padding: 15,
+    marginVertical: 10,
     borderWidth: 2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    borderColor: '#008EB6', // Borde azul
+    borderRadius: 10,
+    backgroundColor: '#fff', // Fondo blanco
   },
-  userName: {
-    fontSize: 18,
+  cardText: {
+    flex: 1, // El texto ocupa todo el espacio disponible
+    marginRight: 10, // Espacio entre el texto y el ícono
   },
 });
 
