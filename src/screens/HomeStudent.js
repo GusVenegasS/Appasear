@@ -2,11 +2,13 @@ import React, { useState, useEffect} from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet,  Dimensions  } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 import Colores from '../styles/colores';
 import TextStyles from '../styles/texto';
 
 const { width } = Dimensions.get('window');
 const HomeStudent = () => {
+    const navigation = useNavigation();
     const [tareas, setTareas] = useState([]); // Inicialmente vacío, luego cargamos datos
     const [filteredTareas, setFilteredTareas] = useState([]); // Almacena tareas filtradas
     const [showCalendar, setShowCalendar] = useState(false);
@@ -41,6 +43,9 @@ const HomeStudent = () => {
     const handleVerTodo = () => {
         setFilteredTareas(tareas);
     };
+    const handleEdit = (tarea) => {
+        navigation.navigate('EditarTarea', { tarea }); // Navega a EditarTarea con los datos de la tarea
+    };
     
   
     const renderTarea = ({ item }) => (
@@ -55,10 +60,10 @@ const HomeStudent = () => {
           <View style={styles.stateIconsContainer}>
             <Text style={[styles.status,TextStyles.estadoCard, { color: item.estado === 'Completada' ? 'green' : 'red' }]}>{item.estado}</Text>
             <View style={styles.iconsContainer}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('VerTarea', { tarea: item })}>
                 <Icon name="eye" size={24} color="gray" />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleEdit(item)} >
                 <Icon name="create-outline" size={24} color="gray" />
               </TouchableOpacity>
             </View>

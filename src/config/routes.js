@@ -5,6 +5,7 @@ import Configuracion from '../screens/configuraciones';
 import HomeStudent from '../screens/HomeStudent';
 import BrigadasStudent from '../screens/BrigadasStudent';
 import ConfiguracionStudent from '../screens/ConfiguracionStudent';
+import HomeStack from '../screens/HomeStack';
 
 export const screens = [
   {
@@ -31,7 +32,7 @@ export const screens = [
     },
     rol: 'admin'
   },
-
+/*
   {
     name: 'Home',
     component: HomeStudent,
@@ -39,7 +40,15 @@ export const screens = [
       tabBarIcon: 'home-outline', // Nombre del icono home student
     },
     rol: 'user'
+  }*/
+ {
+  name: 'Tareas',
+  component: HomeStack,
+  options: {
+    tabBarIcon: 'home-outline',
   },
+  rol: 'user'
+ },
   {
     name: 'Brigadas',
     component: BrigadasStudent,
