@@ -1,11 +1,11 @@
-// src/screens/SettingsScreen.js
+// src/components/LoginScreen.js
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import styles from '../styles/LoginScreenStyles';
-import AvatarUser from '../components/AvatarUser';
-import ProfileForm from '../components/ProfileForm';
+import Logo from '../components/Logo';
+import LoginForm from '../components/LoginForm';
 
-const SettingsScreen = () => {
+const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView
@@ -13,14 +13,14 @@ const SettingsScreen = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Avatar del usuario */}
-        <AvatarUser />
+        {/* Logo de la App */}
+        <Logo />
 
-        {/* Formulario de perfil */}
-        <ProfileForm />
+        {/* Formulario de Login */}
+        <LoginForm onLoginPress={() => navigation.navigate('Brigadas')} />
       </ScrollView>
     </View>
   );
 };
 
-export default SettingsScreen;
+export default LoginScreen;

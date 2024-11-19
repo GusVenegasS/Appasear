@@ -2,6 +2,7 @@
 import Brigadas from '../screens/brigadas';
 import Usuarios from '../screens/usuarios';
 import Configuracion from '../screens/configuraciones';
+import LoginScreen from '../screens/LoginScreen';
 
 export const screens = [
   {

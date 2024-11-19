@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
+import styles from '../styles/StudentsStyles';
+import textStyles from '../styles/texto';
 
-const UserScreen = () => {
+const UserScreen = ({ navigation }) => {
   return (
     <View>
-      <Text>Esta es la pantalla de Usuarios</Text>
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AnadirEstudiantesScreen')}>
+        <Text style={textStyles.title3}>Agregar estudiantes</Text>
+      </TouchableOpacity>
     </View>
   );
 };
