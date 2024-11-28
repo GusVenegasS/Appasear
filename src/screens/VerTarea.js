@@ -1,26 +1,67 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { obtenerTareaPorId } from '../servicesStudent/api-servicesStuden';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colores from '../styles/colores';
+import { useNavigation } from '@react-navigation/native';
 
-const { width } = Dimensions.get('window');
+const VerTarea = ({ route }) => {
+  const navigation = useNavigation(); // Hook para navegación
+  const { tarea_id } = route.params; // Obtener el ID de la tarea de las rutas
+  console.log("Tarea ID:", tarea_id);
+  const [tarea, setTarea] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const VerTarea = ({ route, navigation }) => {
-  const { tarea } = route.params;
+  useEffect(() => {
+    const fetchTarea = async () => {
+      try {
+        const data = await obtenerTareaPorId(tarea_id);
+        setTarea(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error al obtener la tarea:", err);
+        setError("Error al obtener los detalles de la tarea.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Condición para el botón de editar o ver según el estado de la tarea
-  const esEditable = tarea.estado === 'Por Completar';
+    fetchTarea();
+  }, [tarea_id]);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 20 }} />;
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  // Verificar si la evidencia ya tiene el prefijo, si no, añadirlo
+  const evidenciaUri = tarea.evidencia && !tarea.evidencia.startsWith('data:image/')
+    ? `data:image/jpeg;base64,${tarea.evidencia}`
+    : tarea.evidencia;
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text style={styles.title}>Tarea</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Tarea</Text>
+      </View>
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>
-        <Text style={styles.textValue}>{tarea.titulo}</Text>
+        <Text style={styles.textValue}>{tarea.descripcion}</Text>
 
         <Text style={styles.label}>Observaciones</Text>
-        <Text style={styles.textValue}>{tarea.observaciones || "Sin observaciones"}</Text>
+        <Text style={styles.textValue}>{tarea.observacion || "Sin observaciones"}</Text>
 
         <Text style={styles.label}>Asistentes</Text>
         {tarea.asistentes && tarea.asistentes.length > 0 ? (
@@ -35,14 +76,11 @@ const VerTarea = ({ route, navigation }) => {
         )}
 
         <Text style={styles.label}>Evidencia</Text>
-        {tarea.evidencia ? (
-          <Image source={{ uri: tarea.evidencia }} style={styles.previewImage} />
+        {evidenciaUri ? (
+          <Image source={{ uri: evidenciaUri }} style={styles.previewImage} />
         ) : (
           <Text style={styles.textValue}>No hay evidencia</Text>
         )}
-
-        {/* Botón de Editar o Ver */}
-    
       </View>
     </ScrollView>
   );
@@ -54,12 +92,18 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#F8F8F8',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backIcon: {
+    marginRight: 10,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: Colores.primary,
-    textAlign: 'center',
-    marginBottom: 20,
   },
   form: {
     backgroundColor: '#ffffff',
@@ -95,22 +139,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 8,
   },
-  button: {
-    paddingVertical: 12,
-    borderRadius: 5,
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
   },
-  editButton: {
-    backgroundColor: '#008EB6',
-  },
-  viewButton: {
-    backgroundColor: '#D3D3D3',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
   },
 });
 

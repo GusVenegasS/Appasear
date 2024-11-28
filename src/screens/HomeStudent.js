@@ -82,12 +82,19 @@ const HomeStudent = () => {
     };
 
     const handleEdit = (tarea) => {
+        console.log(tarea)
         navigation.navigate("EditarTarea", { tarea }); // Navega a la pantalla de edición
     };
 
     const handleView = (tarea) => {
-        navigation.navigate("VerTarea", { tarea }); // Navega a la pantalla de ver detalles
+        if (tarea && tarea.tarea_id) {
+            navigation.navigate("VerTarea", { tarea_id: tarea.tarea_id }); 
+          } else {
+            console.error("Tarea o tarea_id no están definidos correctamente", tarea);
+          }
     };
+
+  
 
     const renderTarea = ({ item }) => (
         <View style={[styles.card, { width: width * 0.9 }]}>

@@ -106,6 +106,74 @@ function obtenerTareasPorBrigada(usuarioId, periodoAcademico) {
             );
     });
 }
+export async function obtenerTareaPorId(tareaId) {
+    console.log("Obteniendo tarea con ID:", tareaId);
+    let url = `${API_URL}/tareas/completada/${tareaId}`;
+    console.log("URL:", url);
+
+    const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    };
+
+    try {
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener la tarea:", error);
+        throw error;
+    }
+}
+
+export async function guardarTarea(tareaId, observacion, asistentes, evidencia) {
+    try {
+        const url = `http://192.168.3.69:50000/tareas/completar`;
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tarea_id: tareaId,
+                observacion,
+                asistentes,
+                evidencia,
+            }),
+        };
+
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error al guardar la tarea:", error);
+        throw error;
+    }
+}
+
+export async function obtenerEstudiantesPorBrigada(brigadaId, periodoAcademico) {
+    try {
+        let url = `http://192.168.3.69:50000/brigadas/estudiantes?brigada_id=${brigadaId}&periodoAcademico=${periodoAcademico}`;
+        const requestOptions = {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        };
+
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener estudiantes por brigada:", error);
+        throw error;
+    }
+}
+
 
 
 export { obtenerBrigadas, obtenerBrigadasDisponibles, obtenerTareasPorBrigada };

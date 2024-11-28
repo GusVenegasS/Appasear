@@ -1,30 +1,53 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image, Alert, PermissionsAndroid, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PermissionsAndroid, Platform, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colores from '../styles/colores';
 import { launchCamera } from 'react-native-image-picker';
+import { guardarTarea } from '../servicesStudent/api-servicesStuden';
+import { useNavigation } from '@react-navigation/native';
 
-const { width } = Dimensions.get('window');
-
-const EditarTarea = ({ route, navigation }) => {
+const EditarTarea = ({ route }) => {
   const { tarea } = route.params;
+  const navigation = useNavigation();
   const [observaciones, setObservaciones] = useState('');
   const [evidencia, setEvidencia] = useState(null);
-  const [asistentes, setAsistentes] = useState([
-    { id: 1, nombre: 'Gustavo Venegas', seleccionado: false },
-    { id: 2, nombre: 'Carolina Bravo', seleccionado: false },
-    { id: 3, nombre: 'Daniel Vargas', seleccionado: false },
-  ]);
+  const [loading, setLoading] = useState(false);
+
+  // Utilizamos la lista de asistentes que ya está en la tarea
+  const [asistentes, setAsistentes] = useState(
+    tarea.listaAsistentes.map(asistente => ({
+      ...asistente,
+      seleccionado: false, // Añadir el estado de selección
+    }))
+  );
 
   const toggleSeleccionAsistente = (id) => {
     setAsistentes(asistentes.map(asistente => 
-      asistente.id === id ? { ...asistente, seleccionado: !asistente.seleccionado } : asistente
+      asistente.usuario_id === id ? { ...asistente, seleccionado: !asistente.seleccionado } : asistente
     ));
   };
 
-  const handleGuardar = () => {
-    console.log('Guardar cambios');
-    navigation.goBack();
+  const handleGuardar = async () => {
+    const idsAsistentesSeleccionados = asistentes
+      .filter(asistente => asistente.seleccionado)
+      .map(asistente => asistente.usuario_id);
+
+    try {
+      setLoading(true);
+      await guardarTarea(
+        tarea.tarea_id,
+        observaciones,
+        idsAsistentesSeleccionados,
+        evidencia ? evidencia.base64 : null
+      );
+      Alert.alert("Éxito", "La tarea se completó correctamente.");
+      navigation.goBack(); // Regresar a HomeStudent
+    } catch (err) {
+      console.error("Error al guardar la tarea:", err);
+      Alert.alert("Error", "No se pudo completar la tarea. Intente nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const solicitarPermisoCamara = async () => {
@@ -57,6 +80,8 @@ const EditarTarea = ({ route, navigation }) => {
     const options = {
       mediaType: 'photo',
       cameraType: 'back',
+      includeBase64: true, // Asegúrate de incluir la imagen en base64
+      quality: 0.1,
     };
 
     launchCamera(options, (response) => {
@@ -66,24 +91,34 @@ const EditarTarea = ({ route, navigation }) => {
         console.log('Error al abrir la cámara:', response.errorMessage);
         Alert.alert('Error', 'No se pudo acceder a la cámara. Verifica los permisos.');
       } else if (response.assets && response.assets.length > 0) {
-        const { uri } = response.assets[0];
-        setEvidencia({ uri });
+        const { uri, base64 } = response.assets[0];
+        setEvidencia({ uri, base64 });
         console.log('Imagen capturada: ', uri);
+      console.log(base64)
       } else {
         console.log('No se recibió imagen');
       }
     });
   };
 
+  if (loading) {
+    return <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 20 }} />;
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text style={styles.title}>Completar Tarea</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Completar Tarea</Text>
+      </View>
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>
         <TextInput
           style={styles.input}
-          value={tarea.titulo}
+          value={tarea.descripcion}
           editable={false}
         />
 
@@ -99,9 +134,9 @@ const EditarTarea = ({ route, navigation }) => {
         <Text style={styles.label}>Asistentes:</Text>
         {asistentes.map((asistente) => (
           <TouchableOpacity
-            key={asistente.id}
+            key={asistente.usuario_id}
             style={styles.checkboxContainer}
-            onPress={() => toggleSeleccionAsistente(asistente.id)}
+            onPress={() => toggleSeleccionAsistente(asistente.usuario_id)}
           >
             <Icon
               name={asistente.seleccionado ? "checkbox" : "square-outline"}
@@ -129,15 +164,39 @@ const EditarTarea = ({ route, navigation }) => {
           <Image source={{ uri: evidencia.uri }} style={styles.previewImage} />
         )}
 
-        <TouchableOpacity style={styles.guardarButton} onPress={handleGuardar}>
-          <Text style={styles.guardarButtonText}>Guardar</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.guardarButton} onPress={handleGuardar}>
+            <Text style={styles.guardarButtonText}>Guardar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.cancelarButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.cancelarButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  // Añadir el estilo para los botones y otros componentes
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  cancelarButton: {
+    backgroundColor: 'gray',
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: '45%',
+  },
+  cancelarButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
