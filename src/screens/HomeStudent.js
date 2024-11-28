@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Text,
@@ -7,10 +7,11 @@ import {
     StyleSheet,
     Dimensions,
     ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Colores from "../styles/colores";
 import TextStyles from "../styles/texto";
 import { obtenerTareasPorBrigada } from "../servicesStudent/api-servicesStuden";
@@ -24,28 +25,40 @@ const HomeStudent = () => {
     const [showCalendar, setShowCalendar] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
-    const usuarioId = "201911115";
+    const usuarioId = "1235";
     const periodoAcademico = "2024-B";
 
-    useEffect(() => {
-        const fetchTareas = async () => {
-            setLoading(true);
-            try {
-                const data = await obtenerTareasPorBrigada(usuarioId, periodoAcademico);
-                setTareas(data || []);
-                setFilteredTareas(data || []);
-                setError(null);
-            } catch (err) {
-                console.error("Error al obtener las tareas:", err);
-                setError("Error al obtener las tareas, intente de nuevo.");
-            } finally {
-                setLoading(false);
-            }
-        };
+    // Función para obtener tareas desde el servidor
+    const fetchTareas = async () => {
+        try {
+            const data = await obtenerTareasPorBrigada(usuarioId, periodoAcademico);
+            setTareas(data || []);
+            setFilteredTareas(data || []);
+            setError(null);
+        } catch (err) {
+            console.error("Error al obtener las tareas:", err);
+            setError("Error al obtener las tareas, intente de nuevo.");
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    };
 
+    // Actualizar datos al hacer "pull-to-refresh"
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
         fetchTareas();
     }, []);
+
+    // Actualizar datos cuando la pantalla es enfocada
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            fetchTareas();
+        }, [])
+    );
 
     const formatFecha = (fecha) => {
         const dateObj = new Date(fecha);
@@ -80,29 +93,43 @@ const HomeStudent = () => {
         <View style={[styles.card, { width: width * 0.9 }]}>
             <View style={styles.header}>
                 <Text style={[TextStyles.tituloCard]}>{item.brigada_id || "Sin título"}</Text>
-              
             </View>
             <View style={styles.header}>
-                
                 <Text style={styles.date}>{formatFecha(item.fecha)}</Text>
             </View>
             <View style={styles.stateIconsContainer}>
                 <Text
                     style={[
-                        styles.status, TextStyles.estadoCard,
+                        styles.status,
+                        TextStyles.estadoCard,
                         {
-                            color: item.estado === "completada" ? "green" : item.estado === "pendiente" ? "orange" : "red",
+                            color:
+                                item.estado === "completada"
+                                    ? "green"
+                                    : item.estado === "por completar"
+                                    ? "red"
+                                    : "orange",
                         },
                     ]}
                 >
                     {item.estado}
                 </Text>
                 <View style={styles.iconsContainer}>
-                    <TouchableOpacity onPress={() => handleView(item)}>
-                        <Icon name="eye" size={24} color="gray" />
+                    {/* Botón "Ver" */}
+                    <TouchableOpacity
+                        onPress={() => handleView(item)}
+                        disabled={item.estado !== "completada"}
+                        style={[styles.iconButton, item.estado !== "completada" && styles.disabledButton]}
+                    >
+                        <Icon name="eye" size={25} color={item.estado === "completada" ? Colores.colorIcon : "gray"} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleEdit(item)}>
-                        <Icon name="create-outline" size={24} color="gray" />
+                    {/* Botón "Editar" */}
+                    <TouchableOpacity
+                        onPress={() => handleEdit(item)}
+                        disabled={item.estado !== "por completar"}
+                        style={[styles.iconButton, item.estado !== "por completar" && styles.disabledButton]}
+                    >
+                        <Icon name="create" size={25} color={item.estado === "por completar" ? Colores.colorIcon : "gray"} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -165,6 +192,7 @@ const HomeStudent = () => {
                     renderItem={({ item }) => renderSection(item.estado, item.titulo)}
                     keyExtractor={(item) => item.estado}
                     contentContainerStyle={styles.listContentContainer}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 />
             )}
 
@@ -226,7 +254,7 @@ const styles = StyleSheet.create({
         padding: 16,
         marginBottom: 16,
         borderColor: "#008EB6",
-        borderWidth: 1,
+        borderWidth: 2,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
