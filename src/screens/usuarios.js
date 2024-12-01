@@ -10,7 +10,7 @@ const UserScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [apiMessage, setApiMessage] = useState('');
-  const [animationSource, setAnimationSource] = useState(require('../assets/animaciones/error.json'));
+  const [animationSource, setAnimationSource] = useState(require('../assets/animaciones/errorPerro.json'));
   const periodo = "2024-B";
 
   useFocusEffect(
@@ -22,7 +22,7 @@ const UserScreen = ({ navigation }) => {
           console.log(respuesta);
           if (respuesta.status === 404) {
             setApiMessage(respuesta.message); // no hay brigadas
-            setAnimationSource(require('../assets/animaciones/error.json'));
+            setAnimationSource(require('../assets/animaciones/errorPerro.json'));
           } else if (respuesta.status === 500) {
             setApiMessage(respuesta.message); // esta levantado pero no se obtuvo respuesta
             setAnimationSource(require('../assets/animaciones/error_500.json'));

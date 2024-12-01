@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 import LottieView from 'lottie-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import TextStyles from '../styles/texto';
@@ -31,40 +31,47 @@ LocaleConfig.defaultLocale = 'es';
 const Brigadas = ({ navigation }) => {
     const [brigadas, setBrigadas] = useState([]);
     const [apiMessage, setApiMessage] = useState('');
-    const [animationSource, setAnimationSource] = useState(require('../assets/animaciones/error.json'));
+    const [animationSource, setAnimationSource] = useState(require('../assets/animaciones/errorPerro.json'));
     const [loading, setLoading] = useState(false);
     const [expandedDays, setExpandedDays] = useState({}); // Guardamos el estado expandido por día
     const [selectedBrigada, setSelectedBrigada] = useState(null); // Guardamos la brigada seleccionada para mostrar el calendario
+    const [refreshing, setRefreshing] = useState(false); // Estado de recarga
     const periodo = "2024-B";
+
+    const fetchData = async () => {
+        setLoading(true); // Empieza la carga
+        try {
+            const respuesta = await API.obtenerBrigadas(periodo);
+            if (respuesta.status === 404) {
+                setApiMessage(respuesta.message); // No hay brigadas
+                setAnimationSource(require('../assets/animaciones/errorPerro.json'));
+            } else if (respuesta.status === 500) {
+                setApiMessage(respuesta.message); // Error en el servidor
+                setAnimationSource(require('../assets/animaciones/error_500.json'));
+            } else {
+                setBrigadas(respuesta);
+                setApiMessage('');
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setApiMessage('Upss! Algo salió mal'); // Error al obtener datos
+            setAnimationSource(require('../assets/animaciones/serverError.json'));
+        } finally {
+            setLoading(false); // Termina la carga
+        }
+    };
 
     useFocusEffect(
         useCallback(() => {
-            const fetchData = async () => {
-                setLoading(true); // Empieza la carga
-                try {
-                    const respuesta = await API.obtenerBrigadas(periodo);
-                    if (respuesta.status === 404) {
-                        setApiMessage(respuesta.message); // No hay brigadas
-                        setAnimationSource(require('../assets/animaciones/error.json'));
-                    } else if (respuesta.status === 500) {
-                        setApiMessage(respuesta.message); // Error en el servidor
-                        setAnimationSource(require('../assets/animaciones/error_500.json'));
-                    } else {
-                        setBrigadas(respuesta);
-                        setApiMessage('');
-                    }
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                    setApiMessage('Upss! Algo salió mal'); // Error al obtener datos
-                    setAnimationSource(require('../assets/animaciones/serverError.json'));
-                } finally {
-                    setLoading(false); // Termina la carga
-                }
-            };
-
             fetchData();
         }, [])
     );
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
+    }, []);
 
     const toggleExpand = (day) => {
         // Alterna el estado expandido para el día seleccionado
@@ -113,7 +120,6 @@ const Brigadas = ({ navigation }) => {
         }
     };
 
-
     return (
         <View style={styles.container}>
             {loading ? (
@@ -136,7 +142,12 @@ const Brigadas = ({ navigation }) => {
                     <Text style={[TextStyles.title3, TextStyles.centeredText]}>{apiMessage}</Text>
                 </View>
             ) : (
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                >
                     {daysOfWeek.map((day) => (
                         <View key={day} style={styles.card}>
                             <View style={styles.cardHeader}>
@@ -237,8 +248,8 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
     },
     brigadaItemContainer: {
-        flexDirection: 'column', // Aseguramos que el calendario quede debajo del nombre de la brigada
-        marginBottom: 8,
+        flexDirection: 'column',
+        marginVertical: 4,
     },
     brigadaInfo: {
         flexDirection: 'row',
@@ -248,16 +259,10 @@ const styles = StyleSheet.create({
     brigadaItem: {
         fontSize: 16,
         color: '#333',
-        marginRight: 10,
     },
     calendarContainer: {
         marginTop: 10,
-        backgroundColor: '#f1f1f1',
-        padding: 10,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
-    }
+    },
 });
 
 export default Brigadas;
