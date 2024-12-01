@@ -2,6 +2,7 @@
 import Brigadas from '../screens/brigadas';
 import Usuarios from '../screens/usuarios';
 import Configuracion from '../screens/configuraciones';
+import LoginScreen from '../screens/LoginScreen';
 import HomeStudent from '../screens/HomeStudent';
 import BrigadasStudent from '../screens/BrigadasStudent';
 import ConfiguracionStudent from '../screens/ConfiguracionStudent';
