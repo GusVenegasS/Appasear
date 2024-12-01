@@ -37,7 +37,7 @@ const App = () => {
           name={screen.name}
           component={screen.component}
           options={{
-              tabBarButton: screen.options.tabBarButton,
+            tabBarButton: screen.options.tabBarButton,
             tabBarIcon: ({ color, size }) => (
               <Icon name={screen.options.tabBarIcon} size={size} color={color} />
             ),

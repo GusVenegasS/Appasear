@@ -27,7 +27,7 @@ const HomeStudent = () => {
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
 
-    const usuarioId = "1235";
+    const usuarioId = "201911115";
     const periodoAcademico = "2024-B";
 
     // Función para obtener tareas desde el servidor
@@ -88,13 +88,13 @@ const HomeStudent = () => {
 
     const handleView = (tarea) => {
         if (tarea && tarea.tarea_id) {
-            navigation.navigate("VerTarea", { tarea_id: tarea.tarea_id }); 
-          } else {
+            navigation.navigate("VerTarea", { tarea_id: tarea.tarea_id });
+        } else {
             console.error("Tarea o tarea_id no están definidos correctamente", tarea);
-          }
+        }
     };
 
-  
+
 
     const renderTarea = ({ item }) => (
         <View style={[styles.card, { width: width * 0.9 }]}>
@@ -114,8 +114,8 @@ const HomeStudent = () => {
                                 item.estado === "completada"
                                     ? "green"
                                     : item.estado === "por completar"
-                                    ? "red"
-                                    : "orange",
+                                        ? "red"
+                                        : "orange",
                         },
                     ]}
                 >
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 18,
-        
+
         marginBottom: 10,
         fontFamily: 'Nunito-Bold',
     },

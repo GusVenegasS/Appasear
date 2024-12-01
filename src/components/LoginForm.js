@@ -11,16 +11,16 @@ const LoginForm = ({ onLoginPress }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://192.168.100.3:5001/api/login', {
+      const response = await fetch('http://192.168.1.64:5001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.status === 200) {
         await AsyncStorage.setItem('authToken', data.token); // Guardar el token
         Alert.alert('Éxito', 'Inicio de sesión exitoso');

@@ -51,28 +51,28 @@ export const screens = [
     },
     rol: 'admin'
   },
-/*
+  /*
+    {
+      name: 'Home',
+      component: HomeStudent,
+      options: {
+        tabBarIcon: 'home-outline', // Nombre del icono home student
+      },
+      rol: 'user'
+    }*/
   {
-    name: 'Home',
-    component: HomeStudent,
+    name: 'Tareas',
+    component: HomeStack,
     options: {
-      tabBarIcon: 'home-outline', // Nombre del icono home student
+      tabBarIcon: 'home',
     },
     rol: 'user'
-  }*/
- {
-  name: 'Tareas',
-  component: HomeStack,
-  options: {
-    tabBarIcon: 'home-outline',
   },
-  rol: 'user'
- },
   {
     name: 'Brigadas',
     component: BrigadasStudent,
     options: {
-      tabBarIcon: 'person-outline', // Nombre del icono home student
+      tabBarIcon: 'user', // Nombre del icono home student
     },
     rol: 'user'
   },
@@ -80,7 +80,7 @@ export const screens = [
     name: 'Configuración',
     component: ConfiguracionStudent,
     options: {
-      tabBarIcon: 'settings-outline', // Nombre del icono home student
+      tabBarIcon: 'settings', // Nombre del icono home student
     },
     rol: 'user'
   },

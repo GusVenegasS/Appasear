@@ -31,7 +31,7 @@ const BrigadasStudent = () => {
     const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const periodoAcademico = "2024-B";
-    const usuario_id = "1235";
+    const usuario_id = "201911115";
 
     // Función para mostrar el modal de error
     const showErrorModal = (message) => {

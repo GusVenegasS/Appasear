@@ -1,6 +1,6 @@
 // Obtener todas las brigadas de un periodo académico
 
-const API_URL = 'http://172.20.10.8:50002/';
+const API_URL = 'http://192.168.1.64:50002/';
 
 function obtenerBrigadas(periodo) {
     console.log("Obteniendo todas las brigadas para el periodo: " + periodo);
@@ -64,7 +64,7 @@ export async function seleccionarBrigadas(usuario_id, brigada_ids, periodoAcadem
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            
+
             body: JSON.stringify({
                 usuario_id,
                 brigada_ids,
@@ -73,7 +73,7 @@ export async function seleccionarBrigadas(usuario_id, brigada_ids, periodoAcadem
         };
 
         const response = await fetch(url, requestOptions);
-        
+
         // Leer la respuesta JSON incluso si hay un error
         const data = await response.json();
 
@@ -122,7 +122,7 @@ export async function obtenerTareaPorId(tareaId) {
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-         cache: 'no-store'
+        cache: 'no-store'
     };
 
     try {
@@ -189,7 +189,7 @@ export async function obtenerBrigadasAsignadas(usuario_id) {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                 cache: 'no-store'
+                cache: 'no-store'
             },
         });
 

@@ -4,7 +4,7 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
         fechaFin: fechaFin,
         periodoAcademico: periodo
     }
-    let url = `http://172.16.0.208:50000/crearPeriodo`;
+    let url = `http://192.168.1.64:50000/crearPeriodo`;
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -25,7 +25,7 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
 
 function obtenerBrigadas(periodo) {
     console.log("bodyBrigadas: " + periodo);
-    let url = `http://172.16.0.208:50000/obtenerBrigadas?periodoAcademico=${periodo}`;
+    let url = `http://192.168.1.64:50000/obtenerBrigadas?periodoAcademico=${periodo}`;
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -45,7 +45,7 @@ function obtenerBrigadas(periodo) {
 
 function obtenerUsuarios(periodo) {
     console.log("body: " + periodo);
-    let url = `http://172.16.0.208:50000/usuarios?periodoAcademico=${periodo}`;
+    let url = `http://192.168.1.64:50000/usuarios?periodoAcademico=${periodo}`;
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -65,7 +65,7 @@ function obtenerUsuarios(periodo) {
 
 function verTarea(fecha, brigadaID, periodo) {
     console.log("body: " + fecha);
-    let url = `http://172.16.0.208:50000/verTarea?periodoAcademico=${periodo}&fechaQuery=${fecha}&brigada_id=${brigadaID}`;
+    let url = `http://192.168.1.64:50000/verTarea?periodoAcademico=${periodo}&fechaQuery=${fecha}&brigada_id=${brigadaID}`;
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
