@@ -1,0 +1,154 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { obtenerTareaPorId } from '../servicesStudent/api-servicesStuden';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Colores from '../styles/colores';
+import { useNavigation } from '@react-navigation/native';
+
+const VerTarea = ({ route }) => {
+  const navigation = useNavigation(); // Hook para navegación
+  const { tarea_id } = route.params; // Obtener el ID de la tarea de las rutas
+  console.log("Tarea ID:", tarea_id);
+  const [tarea, setTarea] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTarea = async () => {
+      try {
+        const data = await obtenerTareaPorId(tarea_id);
+        setTarea(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error al obtener la tarea:", err);
+        setError("Error al obtener los detalles de la tarea.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTarea();
+  }, [tarea_id]);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 20 }} />;
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  // Verificar si la evidencia ya tiene el prefijo, si no, añadirlo
+  const evidenciaUri = tarea.evidencia && !tarea.evidencia.startsWith('data:image/')
+    ? `data:image/jpeg;base64,${tarea.evidencia}`
+    : tarea.evidencia;
+
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Tarea</Text>
+      </View>
+
+      <View style={styles.form}>
+        <Text style={styles.label}>Descripción</Text>
+        <Text style={styles.textValue}>{tarea.descripcion}</Text>
+
+        <Text style={styles.label}>Observaciones</Text>
+        <Text style={styles.textValue}>{tarea.observacion || "Sin observaciones"}</Text>
+
+        <Text style={styles.label}>Asistentes</Text>
+        {tarea.asistentes && tarea.asistentes.length > 0 ? (
+          tarea.asistentes.map((asistente, index) => (
+            <View key={index} style={styles.asistenteContainer}>
+              <Icon name="checkmark-circle" size={20} color={Colores.primary} />
+              <Text style={styles.asistenteText}>{asistente.nombre}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.textValue}>No hay asistentes</Text>
+        )}
+
+        <Text style={styles.label}>Evidencia</Text>
+        {evidenciaUri ? (
+          <Image source={{ uri: evidenciaUri }} style={styles.previewImage} />
+        ) : (
+          <Text style={styles.textValue}>No hay evidencia</Text>
+        )}
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#F8F8F8',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backIcon: {
+    marginRight: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colores.primary,
+  },
+  form: {
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    padding: 20,
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: Colores.primary,
+  },
+  textValue: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 16,
+  },
+  asistenteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  asistenteText: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  previewImage: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    marginBottom: 16,
+    borderRadius: 8,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
+  },
+});
+
+export default VerTarea;
