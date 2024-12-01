@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const TextStyles = StyleSheet.create({
   title1: {
     fontSize: 32,
-    color: '#ffffff', 
+    color: '#ffffff',
     fontFamily: 'Nunito-Bold',
   },
   title2: {
@@ -26,6 +26,12 @@ const TextStyles = StyleSheet.create({
     color: '#000000', // Cambia el color según tus necesidades
     fontFamily: 'Nunito-Regular',
   },
+  centeredText: {
+    textAlign: 'center',
+  },
+  marginBottom: {
+    marginBottom: 10,
+  }
 });
 
 export default TextStyles;

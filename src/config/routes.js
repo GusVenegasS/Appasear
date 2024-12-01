@@ -2,13 +2,15 @@
 import Brigadas from '../screens/brigadas';
 import Usuarios from '../screens/usuarios';
 import Configuracion from '../screens/configuraciones';
-
+import Usuario from '../screens/usuario';
+import Periodo from '../screens/periodo';
+import Tarea from '../screens/detalleTarea';
 export const screens = [
   {
     name: 'Brigadas',
     component: Brigadas,
     options: {
-      tabBarIcon: 'home-outline', // Nombre del icono para Home
+      tabBarIcon: 'home', // Nombre del icono para Home
     },
     rol: 'admin'
   },
@@ -16,7 +18,7 @@ export const screens = [
     name: 'Usuarios',
     component: Usuarios,
     options: {
-      tabBarIcon: 'person-outline', // Nombre del icono para Usuarios
+      tabBarIcon: 'users', // Nombre del icono para Usuarios
     },
     rol: 'admin'
   },
@@ -24,8 +26,32 @@ export const screens = [
     name: 'Configuración',
     component: Configuracion,
     options: {
-      tabBarIcon: 'settings-outline', // Nombre del icono para Configuracion
+      tabBarIcon: 'settings',
     },
     rol: 'admin'
   },
+  {
+    name: 'Información estudiante',
+    component: Usuario,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  },
+  {
+    name: 'Período académico',
+    component: Periodo,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  },
+  {
+    name: 'Detalle tarea',
+    component: Tarea,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  }
 ];
