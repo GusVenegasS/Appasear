@@ -32,8 +32,24 @@ const EditarTarea = ({ route }) => {
       .filter(asistente => asistente.seleccionado)
       .map(asistente => asistente.usuario_id);
 
+      if (!observaciones.trim()) {
+        Alert.alert("Error", "La observación es obligatoria.");
+        return;
+      }
+      if (idsAsistentesSeleccionados.length === 0) {
+        Alert.alert("Error", "Debes seleccionar al menos un asistente.");
+        return;
+      }
+
+      // Validar que la evidencia esté presente
+      if (!evidencia || !evidencia.base64) {
+        Alert.alert("Error", "Es obligatorio subir una evidencia.");
+        return;
+      }
+
     try {
       setLoading(true);
+     
       await guardarTarea(
         tarea.tarea_id,
         observaciones,
