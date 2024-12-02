@@ -29,9 +29,9 @@ function obtenerBrigadas(periodo) {
 
 // Obtener brigadas con cupos disponibles para un periodo académico
 function obtenerBrigadasDisponibles(periodo) {
-    console.log("Obteniendo brigadas disponibles para el periodo: " + periodo);
+  
     let url = `${API_URL}/brigadas/disponibles?periodoAcademico=${periodo}`;
-    console.log(url)
+   
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -182,22 +182,26 @@ export async function obtenerEstudiantesPorBrigada(brigadaId, periodoAcademico) 
         throw error;
     }
 }
-export async function obtenerBrigadasAsignadas(usuario_id) {
+export async function obtenerBrigadasAsignadas(usuario_id, periodoAcademico) {
     try {
-        const url = `${API_URL}usuarios/${usuario_id}/brigadas`;
+        const url = `${API_URL}usuarios/${usuario_id}/brigadas?periodoAcademico=${periodoAcademico}`;
         const response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                 cache: 'no-store'
+                cache: 'no-store',
             },
         });
 
+        // Capturar el mensaje de error del backend
+        const data = await response.json();
+
         if (!response.ok) {
-            throw new Error(`Error ${response.status}: ${response.statusText}`);
+            console.error("Error en la respuesta del servidor:", data);
+            throw new Error(data.error || `Error ${response.status}: ${response.statusText}`);
         }
 
-        return await response.json();
+        return data;
     } catch (error) {
         console.error("Error al obtener las brigadas asignadas:", error.message);
         throw error;
