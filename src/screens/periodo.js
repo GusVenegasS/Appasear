@@ -1,30 +1,42 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TextInput, Button, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { Calendar } from 'react-native-calendars';
 import API from "../services/api-services";
-import Modal from 'react-native-modal';
-import LottieView from 'lottie-react-native';
 
-const PeriodoAcademico = () => {
+export default function VerificarPeriodo() {
+    const [status, setStatus] = useState(null);
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
     const [isCalendarVisible, setCalendarVisible] = useState(false);
     const [currentDateField, setCurrentDateField] = useState('');
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [animation, setAnimation] = useState('loading'); // 'loading', 'success', 'error'
-    const [apiResponse, setApiResponse] = useState(null);
-    const [periodoCreado, setPeriodoCreado] = useState(false); // Nuevo estado para controlar el estado del periodo
-    const periodo = '2023-B';
+    const [refresh, setRefresh] = useState(false);
+    const [data, setData] = useState(null);
+    const periodo = "2024-B";
 
-    const toggleCalendar = (field) => {
-        if (currentDateField === field && isCalendarVisible) {
-            setCalendarVisible(false);
-        } else {
-            setCurrentDateField(field);
-            setCalendarVisible(true);
+    // Verificar el periodo al iniciar el componente
+    const verificar = async () => {
+        try {
+            const response = await API.verificarPeriodo(periodo);
+            if (response.status === 200) {
+                setStatus('valido');
+                setData(response.data);
+            } else if (response.status === 400) {
+                setStatus('activo');
+                setData(response.data);
+            } else if (response.status === 410) {
+                setStatus('finalizado');
+                setData(response.data);
+            }
+        } catch (error) {
+            console.error(error);
+            setStatus('error');
         }
     };
+
+    useEffect(() => {
+        verificar();
+    }, [refresh]);
 
     const handleDateSelect = (date) => {
         const formattedDate = date.dateString;
@@ -41,167 +53,103 @@ const PeriodoAcademico = () => {
         Keyboard.dismiss();
     };
 
-    const crear = async (fechaInicio, fechaFin) => {
-        console.log("clic en crear");
-        setModalVisible(true);
-        setAnimation('loading');
+    const toggleCalendar = (field) => {
+        setCurrentDateField(field);
+        setCalendarVisible(prev => !prev || currentDateField !== field);
+    };
 
-        try {
-            const respuesta = await API.crearPeriodo(fechaInicio, fechaFin, periodo);
-            console.log(respuesta);
-            if (respuesta.status === 400 || respuesta.status === 401 || respuesta.status === 402 || respuesta.status === 500) {
-                setApiResponse(respuesta.message);
-                setAnimation('error-cat');
-            } else {
-                setApiResponse(respuesta.message);
-                setAnimation('success');
-                setPeriodoCreado(true); // Marca el periodo como creado si la respuesta es exitosa
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setApiResponse("Upss! Algo salió mal");
-            setAnimation('server-error');
-        }
+    const crear = async () => {
+        console.log("Clic en crear", { fechaInicio, fechaFin });
+        setRefresh(prev => !prev);
+    };
+
+    const descargar = async () => {
+        console.log("Clic en descargar");
+        setRefresh(prev => !prev);
     };
 
     const finalizar = async () => {
-        console.log("Finalizar")
+        console.log("Clic en finalizar");
+        setRefresh(prev => !prev);
     };
 
-    const handleModalClose = () => {
-        setModalVisible(false);
-    };
+    const renderCalendars = (dateField) => (
+        isCalendarVisible && currentDateField === dateField && (
+            <View style={styles.calendarContainer}>
+                <Calendar
+                    onDayPress={handleDateSelect}
+                    markedDates={{ [dateField === 'fechaInicio' ? fechaInicio : fechaFin]: { selected: true, selectedColor: 'blue' } }}
+                    theme={{ selectedDayBackgroundColor: '#007BFF', selectedDayTextColor: '#ffffff', todayTextColor: '#007BFF' }}
+                />
+            </View>
+        )
+    );
+
+    const renderInputField = (label, value, field) => (
+        <View style={styles.inputContainer}>
+            <Text style={styles.label}>{label}:</Text>
+            <View style={styles.inputWrapper}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="AAAA-MM-DD"
+                    value={value}
+                    editable={false}
+                />
+                <TouchableOpacity onPress={() => toggleCalendar(field)}>
+                    <Icon name="calendar" size={20} />
+                </TouchableOpacity>
+            </View>
+            {renderCalendars(field)}
+        </View>
+    );
+
+    const renderButton = (title, onPress) => (
+        <View style={styles.buttonContainer}>
+            <Button title={title} onPress={onPress} color="#007BFF" />
+        </View>
+    );
+
+    const renderCard = (extraContent) => (
+        <View style={styles.container}>
+            <View style={styles.card}>
+                {renderInputField("Fecha Inicio", data?.fechaInicio || fechaInicio, 'fechaInicio')}
+                {renderInputField("Fecha Fin", data?.fechaFin || fechaFin, 'fechaFin')}
+                {extraContent}
+            </View>
+        </View>
+    );
 
     return (
-        <TouchableWithoutFeedback onPress={handleOutsidePress}>
-            <View style={styles.container}>
-                <View style={styles.card}>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Fecha Inicio:</Text>
-                        <View style={styles.inputWrapper}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="AAAA-MM-DD"
-                                value={fechaInicio}
-                                onChangeText={setFechaInicio}
-                                editable={false}
-                            />
-                            <TouchableOpacity onPress={() => toggleCalendar('fechaInicio')} disabled={periodoCreado}>
-                                <Icon name="calendar" size={20} color={periodoCreado ? "#ccc" : "#333"} />
-                            </TouchableOpacity>
-                        </View>
-                        {isCalendarVisible && currentDateField === 'fechaInicio' && (
-                            <View style={styles.calendarContainer}>
-                                <Calendar
-                                    onDayPress={handleDateSelect}
-                                    markedDates={{
-                                        [fechaInicio]: { selected: true, selectedColor: 'blue' },
-                                    }}
-                                    theme={{
-                                        selectedDayBackgroundColor: '#007BFF',
-                                        selectedDayTextColor: '#ffffff',
-                                        todayTextColor: '#007BFF',
-                                    }}
-                                />
-                            </View>
-                        )}
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Fecha Fin:</Text>
-                        <View style={styles.inputWrapper}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="AAAA-MM-DD"
-                                value={fechaFin}
-                                onChangeText={setFechaFin}
-                                editable={false}
-                            />
-                            <TouchableOpacity onPress={() => toggleCalendar('fechaFin')} disabled={periodoCreado}>
-                                <Icon name="calendar" size={20} color={periodoCreado ? "#ccc" : "#333"} />
-                            </TouchableOpacity>
-                        </View>
-                        {isCalendarVisible && currentDateField === 'fechaFin' && (
-                            <View style={styles.calendarContainer}>
-                                <Calendar
-                                    onDayPress={handleDateSelect}
-                                    markedDates={{
-                                        [fechaFin]: { selected: true, selectedColor: 'blue' },
-                                    }}
-                                    theme={{
-                                        selectedDayBackgroundColor: '#007BFF',
-                                        selectedDayTextColor: '#ffffff',
-                                        todayTextColor: '#007BFF',
-                                    }}
-                                />
-                            </View>
-                        )}
-                    </View>
-
-                    <View style={styles.buttonContainer}>
-                        <Button
-                            title={periodoCreado ? "Finalizar Período" : "Crear"}
-                            onPress={periodoCreado ? finalizar : () => crear(fechaInicio, fechaFin)}
-                            color="#007BFF"
-                            disabled={false}
-                        />
-                    </View>
+        <ScrollView>
+            {status === 'valido' && data && (
+                <TouchableWithoutFeedback onPress={handleOutsidePress}>
+                    {renderCard(renderButton("Crear", crear))}
+                </TouchableWithoutFeedback>
+            )}
+            {status === 'activo' && data && renderCard(renderButton("Finalizar", finalizar))}
+            {status === 'finalizado' && data && renderCard(
+                <>
+                    {renderInputField("Fecha Finalización", data.fechaFinalización, 'fechaFinalización')}
+                    <Text style={styles.label}>Este período ya fue finalizado, puedes descargar el reporte</Text>
+                    {renderButton("Descargar reporte", descargar)}
+                </>
+            )}
+            {status === 'error' && (
+                <View>
+                    <Text>Algo salió mal</Text>
                 </View>
-
-                <Modal isVisible={isModalVisible} onBackdropPress={handleModalClose}>
-                    <View style={styles.modalContent}>
-                        <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
-                            <Icon name="x" size={24} color="#000" />
-                        </TouchableOpacity>
-                        {animation === 'loading' && (
-                            <LottieView
-                                source={require('../assets/animaciones/cargando.json')}
-                                autoPlay
-                                loop
-                                style={styles.animation}
-                            />
-                        )}
-                        {animation === 'success' && (
-                            <LottieView
-                                source={require('../assets/animaciones/check.json')}
-                                autoPlay
-                                loop={false}
-                                style={styles.animation}
-                            />
-                        )}
-                        {animation === 'server-error' && (
-                            <LottieView
-                                source={require('../assets/animaciones/serverError.json')}
-                                autoPlay
-                                loop={false}
-                                style={styles.animation}
-                            />
-                        )}
-                        {animation === 'error-cat' && (
-                            <LottieView
-                                source={require('../assets/animaciones/error_500.json')}
-                                autoPlay
-                                loop={false}
-                                style={styles.animation}
-                            />
-                        )}
-                        <Text>{apiResponse ? `${apiResponse}` : 'Cargando...'}</Text>
-                    </View>
-                </Modal>
-            </View>
-        </TouchableWithoutFeedback>
+            )}
+        </ScrollView>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-start',
-        alignItems: 'stretch',
         padding: 16,
     },
     card: {
-        flexDirection: 'column',
         padding: 16,
         marginVertical: 8,
         backgroundColor: '#fff',
@@ -209,15 +157,9 @@ const styles = StyleSheet.create({
         borderColor: '#008EB6',
         borderRadius: 8,
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-        color: '#008EB6',
-    },
     inputContainer: {
         marginBottom: 20,
+        position: 'relative',
     },
     label: {
         marginBottom: 5,
@@ -247,23 +189,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         zIndex: 100,
         position: 'absolute',
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        padding: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-    },
-    closeButton: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-    },
-    animation: {
-        width: 100,
-        height: 100,
+        top: 50,
+        left: 0,
+        right: 0,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
 });
-
-export default PeriodoAcademico;
