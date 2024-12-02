@@ -13,7 +13,7 @@ import NuevoEstudianteScreen from './screens/NuevoEstudianteScreen';
 const App = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createStackNavigator();
-  const [rol, setRol] = useState("user"); // Cambia según el rol
+  const [rol, setRol] = useState("admin"); // Cambia según el rol
 
   // Filtra las pantallas según el rol
   const screensToShow = screens.filter(screen => screen.rol === rol);

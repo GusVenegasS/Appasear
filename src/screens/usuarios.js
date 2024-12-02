@@ -46,6 +46,10 @@ const UserScreen = ({ navigation }) => {
     navigation.navigate('Información estudiante', { user });
   };
 
+  const navigateToNewScreen = () => {
+    navigation.navigate('AnadirEstudiantesScreen'); // Ajusta el nombre de la pantalla a la que quieres navegar
+  };
+
   return (
     <View style={styles.container}>
       {loading ? (
@@ -79,6 +83,11 @@ const UserScreen = ({ navigation }) => {
           ))}
         </ScrollView>
       )}
+
+      {/* Botón flotante */}
+      <TouchableOpacity style={styles.fab} onPress={navigateToNewScreen}>
+        <Icon name="plus" size={24} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -124,6 +133,18 @@ const styles = StyleSheet.create({
   cardText: {
     flex: 1, // El texto ocupa todo el espacio disponible
     marginRight: 10, // Espacio entre el texto y el ícono
+  },
+  fab: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
+    backgroundColor: '#008EB6',
+    borderRadius: 30,
+    elevation: 8,
   },
 });
 

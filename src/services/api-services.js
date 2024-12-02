@@ -1,3 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getToken = async () => {
+    try {
+        const token = await AsyncStorage.getItem('authToken');
+        return token;
+    } catch (e) {
+        console.error('Error obteniendo el token', e);
+        return null;
+    }
+};
+
 function crearPeriodo(fechaInicio, fechaFin, periodo) {
     let b = {
         fechaInicio: fechaInicio,
@@ -43,12 +55,17 @@ function obtenerBrigadas(periodo) {
     });
 }
 
-function obtenerUsuarios(periodo) {
+const obtenerUsuarios = async (periodo) => {
     console.log("body: " + periodo);
     let url = `http://192.168.1.64:50000/usuarios?periodoAcademico=${periodo}`;
+    const token = await getToken();
+    console.log("token: " + token);
     const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
     };
 
     return new Promise((resolve, reject) => {
