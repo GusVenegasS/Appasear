@@ -1,6 +1,8 @@
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const API_URL = 'http://172.29.29.139:50000';
+
 const getToken = async () => {
     try {
         const token = await AsyncStorage.getItem('authToken');
@@ -17,7 +19,7 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
         fechaFin: fechaFin,
         periodoAcademico: periodo
     }
-    let url = `http://192.168.100.3:50000/crearPeriodo`;
+    let url = `${API_URL}/crearPeriodo`;
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,7 +40,8 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
 
 function obtenerBrigadas(periodo) {
     console.log("bodyBrigadas: " + periodo);
-    let url = `http://192.168.100.3:50000/obtenerBrigadas?periodoAcademico=${periodo}`;
+    let url = `${API_URL}/obtenerBrigadas?periodoAcademico=${periodo}`;
+    console.log(url)
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -58,7 +61,7 @@ function obtenerBrigadas(periodo) {
 
 const obtenerUsuarios = async (periodo) => {
     console.log("body: " + periodo);
-    let url = `http://192.168.100.3:50000/usuarios?periodoAcademico=${periodo}`;
+    let url = `${API_URL}/usuarios?periodoAcademico=${periodo}`;
     const token = await getToken();
     console.log("token: " + token);
     const requestOptions = {
@@ -83,7 +86,7 @@ const obtenerUsuarios = async (periodo) => {
 
 function verTarea(fecha, brigadaID, periodo) {
     console.log("body: " + fecha);
-    let url = `http://192.168.100.3:50000/verTarea?periodoAcademico=${periodo}&fechaQuery=${fecha}&brigada_id=${brigadaID}`;
+    let url = `${API_URL}/verTarea?periodoAcademico=${periodo}&fechaQuery=${fecha}&brigada_id=${brigadaID}`;
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -103,7 +106,7 @@ function verTarea(fecha, brigadaID, periodo) {
 
 function verificarPeriodo(periodo) {
     console.log("periodo: " + periodo);
-    let url = `http://192.168.100.3:50000/verificarPeriodo?periodo=${periodo}`;
+    let url = `${API_URL}/verificarPeriodo?periodo=${periodo}`;
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -123,7 +126,7 @@ function verificarPeriodo(periodo) {
 
 function finalizarPeriodo(periodo) {
     console.log("periodo: " + periodo);
-    let url = `http://192.168.100.3:50000/finalizarPeriodo?periodo=${periodo}`;
+    let url = `${API_URL}/finalizarPeriodo?periodo=${periodo}`;
     const requestOptions = {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -144,7 +147,7 @@ function finalizarPeriodo(periodo) {
 function descargarReporte(periodo) {
     console.log("aquiiiiiiiiii")
 
-    let url = `http://192.168.100.3:50000/reporteAsistencia?periodoAcademico=${periodo}`;
+    let url = `${API_URL}/reporteAsistencia?periodoAcademico=${periodo}`;
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
