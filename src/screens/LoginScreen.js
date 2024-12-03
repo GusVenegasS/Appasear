@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
         <Logo />
 
         {/* Formulario de Login */}
-        <LoginForm />
+        <LoginForm navigation={navigation}  />
       </ScrollView>
     </View>
   );

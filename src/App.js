@@ -13,12 +13,10 @@ import Usuarios from './screens/usuarios';
 import Configuracion from './screens/configuraciones';
 import BrigadasStudent from './screens/BrigadasStudent';
 import ConfiguracionStudent from './screens/ConfiguracionStudent';
-
 import Usuario from './screens/usuario';
 import Periodo from './screens/periodo';
 import Tarea from './screens/detalleTarea';
 import Perfil from './screens/PerfilScreen';
-
 import HomeStudent from './screens/HomeStudent';
 import EditarTarea from './screens/editarTarea';
 import VerTarea from './screens/VerTarea';
@@ -97,21 +95,26 @@ const App = () => {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const rol = Auth.getRol();
-      console.log(rol);
-
-      if (rol) {
-        setIsLoggedIn(true);
-        setRole(rol);
+      try {
+        const rol = await Auth.getRol(); // Obtén el rol del usuario desde el token
+        if (rol) {
+          setIsLoggedIn(true);
+          setRole(rol);
+        } else {
+          setIsLoggedIn(false);
+          setRole(null);
+        }
+      } catch (error) {
+        console.error('Error verificando el estado de autenticación:', error);
+        setIsLoggedIn(false);
       }
     };
-
     checkLoginStatus();
   }, []);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Iniciar Sesión">
+      <Stack.Navigator initialRouteName="Login">
         {!isLoggedIn ? (
           <Stack.Screen
             name="Login"
@@ -122,22 +125,22 @@ const App = () => {
           role === 'admin' ? (
             <>
               <Stack.Screen
-                name="Admin"
+                name="AdminTabs" // Cambié el nombre a AdminTabs para que coincida con el llamado en LoginForm
                 component={AdminTabs}
                 options={{ headerTitle: 'Admin Dashboard' }}
               />
               <Stack.Screen
-                name="Información estudiante"
+                name="InformaciónEstudiante"
                 component={Usuario}
                 options={{ headerTitle: 'Información estudiante' }}
               />
               <Stack.Screen
-                name="Período académico"
+                name="PeriodoAcademico"
                 component={Periodo}
                 options={{ headerTitle: 'Período académico' }}
               />
               <Stack.Screen
-                name="Perfil"
+                name="PerfilAdmin"
                 component={Perfil}
                 options={{ headerTitle: 'Perfil' }}
               />
@@ -145,7 +148,7 @@ const App = () => {
           ) : (
             <>
               <Stack.Screen
-                name="User"
+                name="UserTabs" // Cambié el nombre a UserTabs para que coincida con el llamado en LoginForm
                 component={UserTabs}
                 options={{ headerTitle: 'User Dashboard' }}
               />

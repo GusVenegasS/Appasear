@@ -5,8 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
+import authService from '../services/auth-service';
 
-const LoginForm = ({ }) => {
+const LoginForm = ({navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // Estado para alternar visibilidad de la contraseña
@@ -17,7 +18,7 @@ const LoginForm = ({ }) => {
   useEffect(() => {
     const fetchPeriodos = async () => {
       try {
-        const response = await fetch('http://192.168.1.64:5001/api/periodos');
+        const response = await fetch('http://192.168.3.69:5001/api/periodos');
         const data = await response.json();
         if (response.status === 200) {
           setPeriodos(data);
@@ -38,7 +39,7 @@ const LoginForm = ({ }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://192.168.1.64:5001/api/login', {
+      const response = await fetch('http://192.168.3.69:5001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,9 +52,18 @@ const LoginForm = ({ }) => {
       const data = await response.json();
 
       if (response.status === 200) {
+
         console.log("entre al if")
         await AsyncStorage.setItem('authToken', data.token); // Guardar el token
-        console.log("ya guarde el token");
+        const rol = await authService.getRol()
+        console.log("Rol obtenido:", rol);
+         // Redirigir según el rol
+      if (rol === 'admin') {
+        console.log('Redirigiendo a Admin');
+        navigation.navigate('AdminTabs'); 
+      } else if (rol === 'user') {
+        navigation.navigate('UserTabs'); // Reemplazar con la pantalla de UserTabs
+      }
         Alert.alert('Éxito', 'Inicio de sesión exitoso');
       } else {
         Alert.alert('Error', data.message || 'Inicio de sesión fallido');
