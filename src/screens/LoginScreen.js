@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
         <Logo />
 
         {/* Formulario de Login */}
-        <LoginForm onLoginPress={() => navigation.navigate('Brigadas')} />
+        <LoginForm />
       </ScrollView>
     </View>
   );

@@ -6,7 +6,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
 
-const LoginForm = ({ onLoginPress }) => {
+const LoginForm = ({ }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // Estado para alternar visibilidad de la contraseña
@@ -17,7 +17,7 @@ const LoginForm = ({ onLoginPress }) => {
   useEffect(() => {
     const fetchPeriodos = async () => {
       try {
-        const response = await fetch('http://192.168.100.3:5001/api/periodos');
+        const response = await fetch('http://192.168.1.64:5001/api/periodos');
         const data = await response.json();
         if (response.status === 200) {
           setPeriodos(data);
@@ -46,12 +46,15 @@ const LoginForm = ({ onLoginPress }) => {
         body: JSON.stringify({ email, password, periodo: selectedPeriodo }),
       });
 
+      console.log("esta es la respuestaaaa", response.status)
+
       const data = await response.json();
 
       if (response.status === 200) {
+        console.log("entre al if")
         await AsyncStorage.setItem('authToken', data.token); // Guardar el token
+        console.log("ya guarde el token");
         Alert.alert('Éxito', 'Inicio de sesión exitoso');
-        onLoginPress(); // Navegar a la pantalla de Brigadas
       } else {
         Alert.alert('Error', data.message || 'Inicio de sesión fallido');
       }
@@ -117,7 +120,7 @@ const LoginForm = ({ onLoginPress }) => {
             }}
             renderItem={(item, isSelected) => {
               return (
-                <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
                   <Text style={textStyles.cuerpo}>{item}</Text>
                 </View>
               );

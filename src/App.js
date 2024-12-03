@@ -1,83 +1,167 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Feather.js';
-import { screens } from './config/routes.js';
-import Colores from './styles/colores.js';
-import CustomHeader from './components/header.js'; // El CustomHeader
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Auth from './services/auth-service';
+import jwtDecode from 'jwt-decode';
+// Pantallas
 import LoginScreen from './screens/LoginScreen';
-import AnadirEstudiantesScreen from './screens/AnadirEstudiantesScreen';
-import NuevoEstudianteScreen from './screens/NuevoEstudianteScreen';
+import Brigadas from './screens/brigadas';
+import Usuarios from './screens/usuarios';
+import Configuracion from './screens/configuraciones';
+import BrigadasStudent from './screens/BrigadasStudent';
+import ConfiguracionStudent from './screens/ConfiguracionStudent';
+
+import Usuario from './screens/usuario';
+import Periodo from './screens/periodo';
+import Tarea from './screens/detalleTarea';
+import Perfil from './screens/PerfilScreen';
+
+import HomeStudent from './screens/HomeStudent';
+import EditarTarea from './screens/editarTarea';
+import VerTarea from './screens/VerTarea';
+
+// Crear Stack Navigator y Bottom Tab Navigator
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const AdminTabs = () => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="Brigadas"
+      component={Brigadas}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="home" color={color} size={size} />
+        )
+      }}
+    />
+    <Tab.Screen
+      name="Usuario"
+      component={Usuarios}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="users" color={color} size={size} />
+        )
+      }}
+    />
+    <Tab.Screen
+      name="Configuración"
+      component={Configuracion}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="settings" color={color} size={size} />
+        )
+      }}
+    />
+  </Tab.Navigator>
+);
+
+const UserTabs = () => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="Tareas"
+      component={HomeStudent}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="home" color={color} size={size} />
+        )
+      }}
+    />
+    <Tab.Screen
+      name="BrigadaStudent"
+      component={BrigadasStudent}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="user" color={color} size={size} />
+        )
+      }}
+    />
+    <Tab.Screen
+      name="ConfiguracionStudent"
+      component={Perfil}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="settings" color={color} size={size} />
+        )
+      }}
+    />
+  </Tab.Navigator>
+);
 
 const App = () => {
-  const Tab = createBottomTabNavigator();
-  const Stack = createStackNavigator();
-  const [rol, setRol] = useState("admin"); // Cambia según el rol
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState('');
 
-  // Filtra las pantallas según el rol
-  const screensToShow = screens.filter(screen => screen.rol === rol);
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const rol = Auth.getRol();
+      console.log(rol);
 
-  const TabNavigator = () => (
-    <Tab.Navigator
-      screenOptions={{
-        header: ({ route }) => (
-          <CustomHeader title={route.name} />
-        ),
-        tabBarStyle: {
-          backgroundColor: Colores.color2,
-        },
-        tabBarActiveTintColor: Colores.color1,
-        tabBarInactiveTintColor: Colores.color3,
-      }}
-    >
-      {screensToShow.map((screen, index) => (
-        <Tab.Screen
-          key={index}
-          name={screen.name}
-          component={screen.component}
-          options={{
-            tabBarButton: screen.options.tabBarButton,
-            tabBarIcon: ({ color, size }) => (
-              <Icon name={screen.options.tabBarIcon} size={size} color={color} />
-            ),
-          }}
-        />
-      ))}
-    </Tab.Navigator>
-  );
+      if (rol) {
+        setIsLoggedIn(true);
+        setRole(rol);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Iniciar Sesión">
-        {/* Pantalla de Login con CustomHeader */}
-        <Stack.Screen
-          name="Iniciar Sesión"
-          component={LoginScreen}
-          options={{
-            header: () => <CustomHeader title="Iniciar Sesión" />, // CustomHeader en la pantalla de login
-          }}
-        />
-        {/* Pantalla Principal con el TabNavigator */}
-        <Stack.Screen
-          name="Brigadas"
-          component={TabNavigator}
-          options={{ headerShown: false }} // Ya no se necesita header aquí porque el TabNavigator tiene su propio header
-        />
-        <Stack.Screen
-          name="AnadirEstudiantesScreen"
-          component={AnadirEstudiantesScreen}
-          options={{
-            header: () => <CustomHeader title="Añadir Estudiantes" />, // CustomHeader en la pantalla de login
-          }}
-        />
-        <Stack.Screen
-          name="NuevoEstudianteScreen"
-          component={NuevoEstudianteScreen}
-          options={{
-            header: () => <CustomHeader title="Nuevo Estudiante" />, // CustomHeader en la pantalla de login
-          }}
-        />
+        {!isLoggedIn ? (
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+        ) : (
+          role === 'admin' ? (
+            <>
+              <Stack.Screen
+                name="Admin"
+                component={AdminTabs}
+                options={{ headerTitle: 'Admin Dashboard' }}
+              />
+              <Stack.Screen
+                name="Información estudiante"
+                component={Usuario}
+                options={{ headerTitle: 'Información estudiante' }}
+              />
+              <Stack.Screen
+                name="Período académico"
+                component={Periodo}
+                options={{ headerTitle: 'Período académico' }}
+              />
+              <Stack.Screen
+                name="Perfil"
+                component={Perfil}
+                options={{ headerTitle: 'Perfil' }}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="User"
+                component={UserTabs}
+                options={{ headerTitle: 'User Dashboard' }}
+              />
+              <Stack.Screen
+                name="EditarTarea"
+                component={EditarTarea}
+                options={{ headerTitle: 'Editar Tarea' }}
+              />
+              <Stack.Screen
+                name="VerTarea"
+                component={VerTarea}
+                options={{ headerTitle: 'Ver Tarea' }}
+              />
+            </>
+          )
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

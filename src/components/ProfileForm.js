@@ -14,28 +14,28 @@ const ProfileForm = () => {
     const fetchUserProfile = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        console.log('Token:', token); 
-    
+        console.log('Token:', token);
+
         if (!token) {
           Alert.alert('Error', 'No se ha encontrado el token de autenticación.');
           return;
         }
-    
-        const response = await fetch('http://192.168.100.3:5001/api/user/profile', {
+
+        const response = await fetch('http://192.168.1.64:5001/api/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         console.log('Código de estado:', response.status); // Verifica el código de estado
         if (!response.ok) {
           throw new Error(`Error en la solicitud, código de estado: ${response.status}`);
         }
-        
+
         const text = await response.text();
         console.log('Respuesta del servidor:', text);
-        
+
         // Intentar parsear como JSON si es posible
         let data;
         try {
@@ -45,7 +45,7 @@ const ProfileForm = () => {
           Alert.alert('Error', 'La respuesta no es un JSON válido.');
           return;
         }
-        
+
         if (data) {
           setNombre(data.nombre);
           setCorreo(data.correo);

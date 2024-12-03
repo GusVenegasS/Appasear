@@ -75,25 +75,25 @@ export const screens = [
     component: Perfil,
     rol: 'admin'
   },
-/*
+  /*
+    {
+      name: 'Home',
+      component: HomeStudent,
+      options: {
+        tabBarIcon: 'home-outline', // Nombre del icono home student
+      },
+      rol: 'user'
+    }*/
   {
-    name: 'Home',
-    component: HomeStudent,
+    name: 'Tareas',
+    component: HomeStack,
     options: {
-      tabBarIcon: 'home-outline', // Nombre del icono home student
+      tabBarIcon: 'home-outline',
     },
     rol: 'user'
-  }*/
- {
-  name: 'Tareas',
-  component: HomeStack,
-  options: {
-    tabBarIcon: 'home-outline',
   },
-  rol: 'user'
- },
   {
-    name: 'Brigadas',
+    name: 'BrigadasStudent',
     component: BrigadasStudent,
     options: {
       tabBarIcon: 'person-outline', // Nombre del icono home student
