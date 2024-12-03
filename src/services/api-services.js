@@ -18,7 +18,6 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
         periodoAcademico: periodo
     }
     let url = `http://192.168.1.64:50000/crearPeriodo`;
-    let url = `http://192.168.1.64:50000/crearPeriodo`;
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,7 +38,6 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
 
 function obtenerBrigadas(periodo) {
     console.log("bodyBrigadas: " + periodo);
-    let url = `http://192.168.1.64:50000/obtenerBrigadas?periodoAcademico=${periodo}`;
     let url = `http://192.168.1.64:50000/obtenerBrigadas?periodoAcademico=${periodo}`;
     const requestOptions = {
         method: "GET",
