@@ -15,6 +15,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Colores from "../styles/colores";
 import TextStyles from "../styles/texto";
 import { obtenerTareasPorBrigada } from "../servicesStudent/api-servicesStuden";
+import ErrorModal from "../components/ErrorAlert";
 
 const { width } = Dimensions.get("window");
 
@@ -26,20 +27,27 @@ const HomeStudent = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
-    const usuarioId = "201911115";
+    const usuarioId = "1234";
     const periodoAcademico = "2024-B";
 
     // Función para obtener tareas desde el servidor
     const fetchTareas = async () => {
         try {
             const data = await obtenerTareasPorBrigada(usuarioId, periodoAcademico);
-            setTareas(data || []);
-            setFilteredTareas(data || []);
-            setError(null);
+            if (data.error) {
+                setError(data.error);
+                setModalVisible(true);
+            } else {
+                setTareas(data || []);
+                setFilteredTareas(data || []);
+                setError(null);
+            }
         } catch (err) {
             console.error("Error al obtener las tareas:", err);
             setError("Error al obtener las tareas, intente de nuevo.");
+            setModalVisible(true);
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -82,19 +90,20 @@ const HomeStudent = () => {
     };
 
     const handleEdit = (tarea) => {
-        console.log(tarea)
         navigation.navigate("EditarTarea", { tarea }); // Navega a la pantalla de edición
     };
 
     const handleView = (tarea) => {
         if (tarea && tarea.tarea_id) {
-            navigation.navigate("VerTarea", { tarea_id: tarea.tarea_id });
+            navigation.navigate("VerTarea", { tarea_id: tarea.tarea_id }); 
         } else {
             console.error("Tarea o tarea_id no están definidos correctamente", tarea);
         }
     };
 
-
+    const closeModal = () => {
+        setModalVisible(false);
+    };
 
     const renderTarea = ({ item }) => (
         <View style={[styles.card, { width: width * 0.9 }]}>
@@ -111,11 +120,13 @@ const HomeStudent = () => {
                         TextStyles.estadoCard,
                         {
                             color:
-                                item.estado === "completada"
-                                    ? "green"
-                                    : item.estado === "por completar"
-                                        ? "red"
-                                        : "orange",
+                            item.estado === "completada"
+                            ? "green"
+                            : item.estado === "por completar"
+                            ? "orange"
+                            : item.estado === "vencida"
+                            ? "red"
+                            : "gray",
                         },
                     ]}
                 >
@@ -194,6 +205,7 @@ const HomeStudent = () => {
                     data={[
                         { estado: "por completar", titulo: "Por Completar" },
                         { estado: "completada", titulo: "Completadas" },
+                        { estado: "vencida", titulo: "Vencidas" },
                         { estado: "pendiente", titulo: "Pendientes" },
                     ]}
                     renderItem={({ item }) => renderSection(item.estado, item.titulo)}
@@ -203,11 +215,12 @@ const HomeStudent = () => {
                 />
             )}
 
-            {error && (
-                <View style={styles.messageContainer}>
-                    <Text style={styles.error}>{error}</Text>
-                </View>
-            )}
+            {/* Modal de Error */}
+            <ErrorModal
+                visible={modalVisible}
+                message={error}
+                onClose={closeModal}
+            />
         </View>
     );
 };
@@ -244,7 +257,6 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 18,
-
         marginBottom: 10,
         fontFamily: 'Nunito-Bold',
     },

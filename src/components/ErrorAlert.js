@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import TextStyles from "../styles/texto";
+import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
 const ErrorModal = ({ visible, message, onClose }) => {
     return (
@@ -11,10 +13,10 @@ const ErrorModal = ({ visible, message, onClose }) => {
         >
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.errorTitle}>¡Error!</Text>
+                    <Text style={[styles.errorTitle]}>¡Ups!</Text>
                     <Text style={styles.errorMessage}>{message}</Text>
                     <TouchableOpacity style={styles.okButton} onPress={onClose}>
-                        <Text style={styles.okButtonText}>OK</Text>
+                        <Text style={TextStyles.boton}>OK</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -43,15 +45,16 @@ const styles = StyleSheet.create({
     },
     errorTitle: {
         fontSize: 20,
-        fontWeight: 'bold',
-        color: '#D32F2F',
+        color: '#ff0000', // Cambia el color según tus necesidades
+        fontFamily: 'Nunito-SemiBold',
         marginBottom: 10,
     },
     errorMessage: {
-        fontSize: 16,
+       
         color: '#333',
         textAlign: 'center',
         marginBottom: 20,
+       fontFamily: 'Nunito-Regular',
     },
     okButton: {
         backgroundColor: '#008EB6',

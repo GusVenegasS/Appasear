@@ -5,7 +5,7 @@ import Colores from '../styles/colores';
 import { launchCamera } from 'react-native-image-picker';
 import { guardarTarea } from '../servicesStudent/api-servicesStuden';
 import { useNavigation } from '@react-navigation/native';
-
+import TextStyles from "../styles/texto";
 const EditarTarea = ({ route }) => {
   const { tarea } = route.params;
   const navigation = useNavigation();
@@ -32,8 +32,24 @@ const EditarTarea = ({ route }) => {
       .filter(asistente => asistente.seleccionado)
       .map(asistente => asistente.usuario_id);
 
+    if (!observaciones.trim()) {
+      Alert.alert("Error", "La observación es obligatoria.");
+      return;
+    }
+    if (idsAsistentesSeleccionados.length === 0) {
+      Alert.alert("Error", "Debes seleccionar al menos un asistente.");
+      return;
+    }
+
+    // Validar que la evidencia esté presente
+    if (!evidencia || !evidencia.base64) {
+      Alert.alert("Error", "Es obligatorio subir una evidencia.");
+      return;
+    }
+
     try {
       setLoading(true);
+     
       await guardarTarea(
         tarea.tarea_id,
         observaciones,
@@ -80,7 +96,7 @@ const EditarTarea = ({ route }) => {
     const options = {
       mediaType: 'photo',
       cameraType: 'back',
-      includeBase64: true, // Asegúrate de incluir la imagen en base64
+      includeBase64: true,
       quality: 0.1,
     };
 
@@ -93,8 +109,6 @@ const EditarTarea = ({ route }) => {
       } else if (response.assets && response.assets.length > 0) {
         const { uri, base64 } = response.assets[0];
         setEvidencia({ uri, base64 });
-        console.log('Imagen capturada: ', uri);
-      console.log(base64)
       } else {
         console.log('No se recibió imagen');
       }
@@ -110,8 +124,9 @@ const EditarTarea = ({ route }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
+          <Text>Atrás</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Completar Tarea</Text>
+       
       </View>
 
       <View style={styles.form}>
@@ -139,16 +154,17 @@ const EditarTarea = ({ route }) => {
             onPress={() => toggleSeleccionAsistente(asistente.usuario_id)}
           >
             <Icon
-              name={asistente.seleccionado ? "checkbox" : "square-outline"}
+              name={asistente.seleccionado ? "checkbox" : "square-outline" }
               size={24}
-              color={Colores.primary}
+              color='#333'
+             
             />
             <Text style={styles.checkboxLabel}>{asistente.nombre}</Text>
           </TouchableOpacity>
         ))}
 
         <Text style={styles.label}>Subir Evidencia:</Text>
-        <View style={styles.evidenciaContainer}>
+        <View style={[styles.input, styles.evidenciaContainer]}>
           <TextInput
             style={styles.evidenciaInput}
             value={evidencia ? 'Imagen capturada' : ''}
@@ -166,11 +182,11 @@ const EditarTarea = ({ route }) => {
 
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.guardarButton} onPress={handleGuardar}>
-            <Text style={styles.guardarButtonText}>Guardar</Text>
+            <Text style={TextStyles.boton}>Guardar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.cancelarButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.cancelarButtonText}>Cancelar</Text>
+            <Text style={TextStyles.boton}>Cancelar</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -180,6 +196,12 @@ const EditarTarea = ({ route }) => {
 
 const styles = StyleSheet.create({
   // Añadir el estilo para los botones y otros componentes
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -188,7 +210,7 @@ const styles = StyleSheet.create({
   cancelarButton: {
     backgroundColor: 'gray',
     paddingVertical: 12,
-    borderRadius: 5,
+    borderRadius: 8,
     alignItems: 'center',
     width: '45%',
   },
@@ -207,29 +229,36 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colores.primary,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   form: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 8,
-    padding: 20,
-    borderColor: '#E0E0E0',
-    borderWidth: 1,
+    padding: 16,
+    marginBottom: 16,
+    borderColor: "#008EB6",
+    borderWidth: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
     marginBottom: 8,
-    color: Colores.primary,
+    color: '#333',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 5,
+    borderColor: '#000000',
+    borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
     fontSize: 16,
-    backgroundColor: '#F9F9F9',
+    fontFamily: 'Nunito-SemiBold',
+    backgroundColor: '#F1F1F1',
     marginBottom: 16,
   },
   textArea: {
@@ -240,20 +269,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+
   },
   checkboxLabel: {
     fontSize: 16,
     marginLeft: 8,
+    fontFamily: 'Nunito-SemiBold',
   },
   evidenciaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    marginBottom: 16,
   },
   evidenciaInput: {
     flex: 1,
@@ -270,9 +295,9 @@ const styles = StyleSheet.create({
   guardarButton: {
     backgroundColor: '#008EB6',
     paddingVertical: 12,
-    borderRadius: 5,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: 20,
+    width: '45%',
   },
   guardarButtonText: {
     color: '#ffffff',

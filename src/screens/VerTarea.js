@@ -52,8 +52,10 @@ const VerTarea = ({ route }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
+          <Text style={styles.title}>Atrás</Text>
+          
         </TouchableOpacity>
-        <Text style={styles.title}>Tarea</Text>
+       
       </View>
 
       <View style={styles.form}>
@@ -67,7 +69,7 @@ const VerTarea = ({ route }) => {
         {tarea.asistentes && tarea.asistentes.length > 0 ? (
           tarea.asistentes.map((asistente, index) => (
             <View key={index} style={styles.asistenteContainer}>
-              <Icon name="checkmark-circle" size={20} color={Colores.primary} />
+              <Icon name="checkmark-circle" size={20} color={Colores.color1} />
               <Text style={styles.asistenteText}>{asistente.nombre}</Text>
             </View>
           ))
@@ -99,38 +101,55 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     marginRight: 10,
+   
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+
+    fontSize: 16,
     color: Colores.primary,
+    fontFamily: 'Nunito-Semibold',
   },
   form: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 8,
-    padding: 20,
-    borderColor: '#E0E0E0',
-    borderWidth: 1,
+    padding: 16,
+    marginBottom: 16,
+    borderColor: "#008EB6",
+    borderWidth: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
     marginBottom: 8,
-    color: Colores.primary,
+    color: '#333',
+
   },
   textValue: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: 16,  
+    borderRadius: 8,
     marginBottom: 16,
+    color: "gray",      
+    fontFamily: 'Nunito-SemiBold',
+    
+  
   },
   asistenteContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+
   },
   asistenteText: {
     fontSize: 16,
     marginLeft: 8,
+   
+    color: "gray",      
+    fontFamily: 'Nunito-SemiBold',
   },
   previewImage: {
     width: '100%',
