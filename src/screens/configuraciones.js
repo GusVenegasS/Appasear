@@ -13,7 +13,7 @@ const SettingsScreen = ({ navigation }) => {
       await AsyncStorage.removeItem('authToken');
 
       // Redirige al usuario a la pantalla de inicio de sesión
-      navigation.navigate('Login');
+      navigation.navigate('Iniciar Sesión');
     } catch (e) {
       console.error('Error al cerrar sesión', e);
     }

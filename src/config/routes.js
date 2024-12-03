@@ -11,6 +11,7 @@ import Usuario from '../screens/usuario';
 import Periodo from '../screens/periodo';
 import Tarea from '../screens/detalleTarea';
 import Perfil from '../screens/PerfilScreen';
+import PerfilScreen from '../screens/PerfilScreen';
 
 export const screens = [
   {
@@ -53,47 +54,24 @@ export const screens = [
     },
     rol: 'admin'
   },
-
-  {
-    name: 'Información estudiante',
-    component: Usuario,
-    options: {
-      tabBarButton: () => null, tabBarIcon: 'info'
-    },
-    rol: 'admin'
-  },
-  {
-    name: 'Período académico',
-    component: Periodo,
-    options: {
-      tabBarButton: () => null, tabBarIcon: 'info'
-    },
-    rol: 'admin'
-  },
   {
     name: 'Perfil',
-    component: Perfil,
+    component: PerfilScreen,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
     rol: 'admin'
   },
-  /*
-    {
-      name: 'Home',
-      component: HomeStudent,
-      options: {
-        tabBarIcon: 'home-outline', // Nombre del icono home student
-      },
-      rol: 'user'
-    }*/
   {
     name: 'Tareas',
-    component: HomeStack,
+    component: HomeStudent,
     options: {
       tabBarIcon: 'home-outline',
     },
     rol: 'user'
   },
   {
-    name: 'BrigadasStudent',
+    name: 'Brigadas',
     component: BrigadasStudent,
     options: {
       tabBarIcon: 'person-outline', // Nombre del icono home student
@@ -102,7 +80,7 @@ export const screens = [
   },
   {
     name: 'Configuración',
-    component: ConfiguracionStudent,
+    component: PerfilScreen,
     options: {
       tabBarIcon: 'settings-outline', // Nombre del icono home student
     },
@@ -117,10 +95,4 @@ export const screens = [
     },
     rol: 'admin'
   },
-  {
-    name: 'Perfil',
-    component: Perfil,
-    rol: 'user'
-  },
-
 ];
