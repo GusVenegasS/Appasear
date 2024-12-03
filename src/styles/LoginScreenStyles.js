@@ -38,18 +38,21 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: 7,
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 10,
     backgroundColor: 'white',
+    flexDirection: 'row',  // Asegura que los elementos estén alineados horizontalmente
+    alignItems: 'center',  // Centra el contenido verticalmente
   },
   textInput: {
+    flex: 1,  // Hace que el TextInput ocupe todo el espacio disponible
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     paddingLeft: 10,
-    paddingRight: 40, // Para espacio del icono
+    paddingRight: 40, // Para dejar espacio para el ícono
     height: 50,
     fontSize: 16,
   },
@@ -71,7 +74,8 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 10,  // Alinea el ícono a la derecha del TextInput
-    top: 13,    // Ajuste vertical
+    top: '50%',  // Alinea verticalmente al centro
+    transform: [{ translateY: -12 }], // Ajuste fino para centrar verticalmente
   },
   label: {
     fontSize: 14,
@@ -90,6 +94,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2, // Opacidad de la sombra
     shadowRadius: 3, // Radio de la sombra
     elevation: 3, // Para Android, sombra
+  },
+  dropdownButton: {
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    height: 50,
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 7,
+  },
+  dropdown: {
+    borderRadius: 10,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
   },
 });
 

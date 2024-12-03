@@ -10,6 +10,8 @@ import HomeStack from '../screens/HomeStack';
 import Usuario from '../screens/usuario';
 import Periodo from '../screens/periodo';
 import Tarea from '../screens/detalleTarea';
+import Perfil from '../screens/PerfilScreen';
+
 export const screens = [
   {
     name: 'Brigadas',
@@ -51,28 +53,50 @@ export const screens = [
     },
     rol: 'admin'
   },
-  /*
-    {
-      name: 'Home',
-      component: HomeStudent,
-      options: {
-        tabBarIcon: 'home-outline', // Nombre del icono home student
-      },
-      rol: 'user'
-    }*/
+
   {
-    name: 'Tareas',
-    component: HomeStack,
+    name: 'Información estudiante',
+    component: Usuario,
     options: {
-      tabBarIcon: 'home',
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  },
+  {
+    name: 'Período académico',
+    component: Periodo,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+    rol: 'admin'
+  },
+  {
+    name: 'Perfil',
+    component: Perfil,
+    rol: 'admin'
+  },
+/*
+  {
+    name: 'Home',
+    component: HomeStudent,
+    options: {
+      tabBarIcon: 'home-outline', // Nombre del icono home student
     },
     rol: 'user'
+  }*/
+ {
+  name: 'Tareas',
+  component: HomeStack,
+  options: {
+    tabBarIcon: 'home-outline',
   },
+  rol: 'user'
+ },
   {
     name: 'Brigadas',
     component: BrigadasStudent,
     options: {
-      tabBarIcon: 'user', // Nombre del icono home student
+      tabBarIcon: 'person-outline', // Nombre del icono home student
     },
     rol: 'user'
   },
@@ -80,11 +104,10 @@ export const screens = [
     name: 'Configuración',
     component: ConfiguracionStudent,
     options: {
-      tabBarIcon: 'settings', // Nombre del icono home student
+      tabBarIcon: 'settings-outline', // Nombre del icono home student
     },
     rol: 'user'
   },
-
 
   {
     name: 'Detalle tarea',
@@ -93,5 +116,11 @@ export const screens = [
       tabBarButton: () => null, tabBarIcon: 'info'
     },
     rol: 'admin'
-  }
+  },
+  {
+    name: 'Perfil',
+    component: Perfil,
+    rol: 'user'
+  },
+
 ];
