@@ -16,6 +16,7 @@ import Colores from "../styles/colores";
 import TextStyles from "../styles/texto";
 import { obtenerTareasPorBrigada } from "../servicesStudent/api-servicesStuden";
 import ErrorModal from "../components/ErrorAlert";
+import authService from "../services/auth-service";
 
 const { width } = Dimensions.get("window");
 
@@ -29,13 +30,25 @@ const HomeStudent = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const usuarioId = "1234";
-    const periodoAcademico = "2024-B";
+
 
     // Función para obtener tareas desde el servidor
     const fetchTareas = async () => {
         try {
-            const data = await obtenerTareasPorBrigada(usuarioId, periodoAcademico);
+
+            const userInfo = await authService.getUserDetails();
+            if (!userInfo) {
+                setError("Token inválido o expirado");
+                setModalVisible(true);
+                return;
+            }
+            const { id, periodo} = userInfo;
+            console.log("aqui obteniendoooooooo")
+            console.log(id)
+
+
+
+            const data = await obtenerTareasPorBrigada(id, periodo);
             if (data.error) {
                 setError(data.error);
                 setModalVisible(true);
