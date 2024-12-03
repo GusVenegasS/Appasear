@@ -1,7 +1,7 @@
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://172.29.29.139:50000';
+const API_URL = 'http://172.29.35.248:50000';
 
 const getToken = async () => {
     try {

@@ -70,6 +70,7 @@ const fetchBrigadas = async () => {
             throw new Error("No se pudo obtener la información del usuario. El token es inválido o ha expirado.");
         }
         const { id, periodo } = userDetails;
+        console.log(periodo)
         const asignadas = await obtenerBrigadasAsignadas(id, periodo);
         if (asignadas && asignadas.length > 0) {
             setBrigadasAsignadas(asignadas);

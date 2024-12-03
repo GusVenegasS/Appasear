@@ -13,6 +13,7 @@ const PerfilScreen = ({ navigation })  => {
     try {
       // Limpia el token de AsyncStorage
       await AsyncStorage.removeItem('authToken');
+      
 
       // Redirige al usuario a la pantalla de inicio de sesión
       navigation.navigate('Iniciar Sesión');

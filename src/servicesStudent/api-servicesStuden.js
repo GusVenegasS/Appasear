@@ -1,6 +1,6 @@
 // Obtener todas las brigadas de un periodo académico
 
-const API_URL = 'http://172.29.29.139:50002/';
+const API_URL = 'http://172.29.35.248:50002/';
 
 function obtenerBrigadas(periodo) {
     console.log("Obteniendo todas las brigadas para el periodo: " + periodo);
@@ -29,9 +29,9 @@ function obtenerBrigadas(periodo) {
 
 // Obtener brigadas con cupos disponibles para un periodo académico
 function obtenerBrigadasDisponibles(periodo) {
-
+    console.log("Obteniendo todas las brigadas para el periodo: " + periodo);
     let url = `${API_URL}/brigadas/disponibles?periodoAcademico=${periodo}`;
-
+ 
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -184,7 +184,10 @@ export async function obtenerEstudiantesPorBrigada(brigadaId, periodoAcademico) 
 }
 export async function obtenerBrigadasAsignadas(usuario_id, periodoAcademico) {
     try {
+        console.log("aqui viendo birgadas del usurio " + periodoAcademico)
+        console.log(url)
         const url = `${API_URL}usuarios/${usuario_id}/brigadas?periodoAcademico=${periodoAcademico}`;
+        console.log(url)
         const response = await fetch(url, {
             method: "GET",
             headers: {

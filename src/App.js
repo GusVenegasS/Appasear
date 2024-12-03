@@ -33,6 +33,7 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    setRole('')
     const checkLoginStatus = async () => {
       try {
         const rol = await Auth.getRol();
@@ -106,6 +107,20 @@ const App = () => {
           component={NuevoEstudianteScreen}
           options={{
             header: () => <CustomHeader title="Nuevo Estudiante" />, // CustomHeader en la pantalla de login
+          }}
+        />
+           <Stack.Screen
+          name="EditarTarea"
+          component={EditarTarea}
+          options={{
+            header: () => <CustomHeader title="Editar Tarea" />, // CustomHeader en la pantalla de login
+          }}
+        />
+         <Stack.Screen
+          name="VerTarea"
+          component={VerTarea}
+          options={{
+            header: () => <CustomHeader title="Ver Tarea" />, // CustomHeader en la pantalla de login
           }}
         />
       </Stack.Navigator>

@@ -18,7 +18,7 @@ const LoginForm = ({ onLoginPress }) => {
   useEffect(() => {
     const fetchPeriodos = async () => {
       try {
-        const response = await fetch('http://172.29.29.139:5001/api/periodos');
+        const response = await fetch('http://172.29.35.248:5001/api/periodos');
         const data = await response.json();
         if (response.status === 200) {
           setPeriodos(data);
@@ -39,7 +39,7 @@ const LoginForm = ({ onLoginPress }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://172.29.29.139:5001/api/login', {
+      const response = await fetch('http://172.29.35.248:5001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
