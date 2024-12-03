@@ -16,6 +16,7 @@ import { obtenerBrigadasDisponibles, seleccionarBrigadas, obtenerBrigadasAsignad
 import ErrorModal from "../components/ErrorAlert";
 import SuccessModal from "../components/SuccesModal";
 import TextStyles from "../styles/texto";
+import authService from "../services/auth-service";
 
 const { width } = Dimensions.get("window"); // Obtener el ancho de la pantalla
 
@@ -30,8 +31,6 @@ const BrigadasStudent = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-    const periodoAcademico = "2024-B";
-    const usuario_id = "1234";
 
     const daysOfWeek = ["lunes", "martes", "miércoles", "jueves", "viernes"];
 
@@ -66,12 +65,17 @@ const BrigadasStudent = () => {
 const fetchBrigadas = async () => {
     setLoading(true);
     try {
-        const asignadas = await obtenerBrigadasAsignadas(usuario_id, periodoAcademico);
+        const userDetails = await authService.getUserDetails();
+        if (!userDetails) {
+            throw new Error("No se pudo obtener la información del usuario. El token es inválido o ha expirado.");
+        }
+        const { id, periodo } = userDetails;
+        const asignadas = await obtenerBrigadasAsignadas(id, periodo);
         if (asignadas && asignadas.length > 0) {
             setBrigadasAsignadas(asignadas);
             setBrigadas([]); // Asegurarse de que las brigadas disponibles estén vacías si ya hay asignadas
         } else {
-            const disponibles = await obtenerBrigadasDisponibles(periodoAcademico);
+            const disponibles = await obtenerBrigadasDisponibles(periodo);
             if (disponibles && disponibles.length > 0) {
                 setBrigadas(disponibles);
             } else {
@@ -114,7 +118,13 @@ const fetchBrigadas = async () => {
         }
 
         try {
-            const response = await seleccionarBrigadas(usuario_id, brigadaIdsSeleccionadas, periodoAcademico);
+            const userDetails = await userService.getUserDetails();
+            if (!userDetails) {
+                throw new Error("No se pudo obtener la información del usuario. El token es inválido o ha expirado.");
+            }
+            const { id, periodo } = userDetails;
+
+            const response = await seleccionarBrigadas(id, brigadaIdsSeleccionadas, periodo);
             if (response && response.error) {
                 showErrorModal(response.error);
             } else {
@@ -131,7 +141,7 @@ const fetchBrigadas = async () => {
     useFocusEffect(
         useCallback(() => {
             fetchBrigadas();
-        }, [periodoAcademico])
+        }, [])
     );
 
     // Expandir o contraer las brigadas para un día específico
