@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const ConfiguracionStudent = () => {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Este es Configuracion</Text>
+        <Text style={styles.text}>Este es Configuracion estudiantes</Text>
       </View>
     );
   };
