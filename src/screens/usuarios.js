@@ -43,7 +43,7 @@ const UserScreen = ({ navigation }) => {
   );
 
   const navigateToDetails = (user) => {
-    navigation.navigate('Información estudiante', { user });
+    navigation.navigate('InfoEstudiante', { user });
   };
 
   const navigateToNewScreen = () => {

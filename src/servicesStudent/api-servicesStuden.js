@@ -1,6 +1,6 @@
 // Obtener todas las brigadas de un periodo académico
 
-const API_URL = 'http://172.29.35.248:50002/';
+const API_URL = 'http://192.168.1.64:50002/';
 
 function obtenerBrigadas(periodo) {
     console.log("Obteniendo todas las brigadas para el periodo: " + periodo);
@@ -31,7 +31,7 @@ function obtenerBrigadas(periodo) {
 function obtenerBrigadasDisponibles(periodo) {
     console.log("Obteniendo todas las brigadas para el periodo: " + periodo);
     let url = `${API_URL}/brigadas/disponibles?periodoAcademico=${periodo}`;
- 
+
     const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },

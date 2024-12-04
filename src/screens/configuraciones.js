@@ -5,19 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
 
-const SettingsScreen = ({ navigation }) => {
-
-  const handleLogout = async () => {
-    try {
-      // Limpia el token de AsyncStorage
-      await AsyncStorage.removeItem('authToken');
-
-      // Redirige al usuario a la pantalla de inicio de sesión
-      navigation.navigate('Iniciar Sesión');
-    } catch (e) {
-      console.error('Error al cerrar sesión', e);
-    }
-  };
+const SettingsScreen = ({ onLogout }) => {
 
   return (
     <View style={styles.container}>
@@ -38,7 +26,7 @@ const SettingsScreen = ({ navigation }) => {
           <Icon name="chevron-right" size={24} color="#008EB6" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.row} onPress={handleLogout}>
+        <TouchableOpacity style={styles.row} onPress={onLogout}>
           <View style={styles.rowContent}>
             <Icon name="log-out" size={24} color="#008EB6" />
             <Text style={[TextStyles.cuerpo, styles.rowText]}>Cerrar Sesión</Text>
