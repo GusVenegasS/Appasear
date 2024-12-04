@@ -5,12 +5,13 @@ import styles from '../styles/LoginScreenStyles';
 import Logo from '../components/Logo';
 import LoginForm from '../components/LoginForm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AUTH from '../services/auth-service'
 
 const LoginScreen = ({ navigation, onLogin }) => {
 
   const handleLogin = async (email, password, periodo) => {
     // Llamar a la API de login
-    const response = await fetch('http://192.168.1.64:5001/api/login', {
+    const response = await fetch('http://172.16.0.208:5001/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,7 +22,6 @@ const LoginScreen = ({ navigation, onLogin }) => {
     const data = await response.json();
 
     if (response.status === 200) {
-      // Llamar a la función onLogin de AppNavigator para actualizar el estado del usuario
       await AsyncStorage.setItem('authToken', data.token);
       onLogin(data); // Pasamos los datos del usuario a AppNavigator
 

@@ -21,7 +21,7 @@ const ProfileForm = () => {
           return;
         }
 
-        const response = await fetch('http://172.29.35.248:5001/api/user/profile', {
+        const response = await fetch('http://172.16.0.208:5001/api/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

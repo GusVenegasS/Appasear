@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 
 const InfoEstudiante = ({ route }) => {
     const { user } = route.params;
-    console.log(user.celular);
+    console.log(user.telefono);
 
     return (
         <View style={styles.container}>
@@ -18,7 +18,7 @@ const InfoEstudiante = ({ route }) => {
             {/* Tarjeta con la información del usuario */}
             <View style={styles.card}>
                 <Text style={styles.cardText}>Nombre: {user.nombre}</Text>
-                <Text style={styles.cardText}>Celular: {user.celular}</Text>
+                <Text style={styles.cardText}>Celular: {user.telefono}</Text>
                 <Text style={styles.cardText}>Correo: {user.correo}</Text>
                 <Text style={styles.cardText}>Periodo Académico: {user.periodoAcademico}</Text>
             </View>

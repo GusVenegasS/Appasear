@@ -12,6 +12,7 @@ import LoginScreen from './screens/LoginScreen';
 import Brigadas from './screens/brigadas';
 import Usuarios from './screens/usuarios';
 import Usuario from './screens/usuario';
+import Tarea from './screens/detalleTarea';
 import Configuracion from './screens/configuraciones';
 import PerfilScreen from './screens/PerfilScreen';
 import BrigadasStudent from './screens/BrigadasStudent';
@@ -20,6 +21,7 @@ import HomeStudent from './screens/HomeStudent';
 import EditarTarea from './screens/editarTarea';
 import VerTarea from './screens/VerTarea';
 import AnadirEstudiantesScreen from './screens/AnadirEstudiantesScreen';
+import Periodo from './screens/periodo';
 import NuevoEstudianteScreen from './screens/NuevoEstudianteScreen';
 import Colores from './styles/colores.js';
 import TextStyles from './styles/texto.js';
@@ -67,7 +69,7 @@ const App = () => {
     );
   }
 
-  const AdminTabs = () => {
+  const AdminTabs = ({ navigation }) => {
     return (
       <Tab.Navigator
         screenOptions={{
@@ -109,7 +111,7 @@ const App = () => {
         />
         <Tab.Screen
           name="Configuraciones"
-          children={() => <Configuracion onLogout={handleLogout} />}
+          children={() => <Configuracion navigation={navigation} onLogout={handleLogout} />}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Icon name={"settings"} size={size} color={color} />
@@ -197,6 +199,58 @@ const App = () => {
           component={Usuario}
           options={{
             title: 'Información estudiante',
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+        <Stack.Screen
+          name="Detalle tarea"
+          component={Tarea}
+          options={{
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+        <Stack.Screen
+          name="AnadirEstudiantesScreen"
+          component={AnadirEstudiantesScreen}
+          options={{
+            title: 'Añadir Estudiante',
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+        <Stack.Screen
+          name="NuevoEstudianteScreen"
+          component={NuevoEstudianteScreen}
+          options={{
+            title: 'Añadir Estudiante',
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+        <Stack.Screen
+          name="Período académico"
+          component={Periodo}
+          options={{
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+        <Stack.Screen
+          name="Perfil"
+          component={Perfil}
+          options={{
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,

@@ -5,12 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
 
-const SettingsScreen = ({ onLogout }) => {
+const SettingsScreen = ({ navigation, onLogout }) => {
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <TouchableOpacity style={styles.row} onPress={() => { /* Navega a la pantalla de Perfil */ }}>
+        <TouchableOpacity style={styles.row} onPress={() => navigation.navigate('Perfil')}>
           <View style={styles.rowContent}>
             <Icon name="user" size={24} color="#008EB6" />
             <Text style={[TextStyles.cuerpo, styles.rowText]}>Perfil</Text>

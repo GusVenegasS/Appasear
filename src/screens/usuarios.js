@@ -5,19 +5,20 @@ import { useFocusEffect } from '@react-navigation/native';
 import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
 import API from "../services/api-services";
+import AUTH from "../services/auth-service";
 
 const UserScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [apiMessage, setApiMessage] = useState('');
   const [animationSource, setAnimationSource] = useState(require('../assets/animaciones/errorPerro.json'));
-  const periodo = "2024-B";
 
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
         setLoading(true);
         try {
+          const { periodo } = await AUTH.getUserDetails();
           const respuesta = await API.obtenerUsuarios(periodo);  // Aquí va la URL de tu API
           console.log(respuesta);
           if (respuesta.status === 404) {
