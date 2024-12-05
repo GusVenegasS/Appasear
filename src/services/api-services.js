@@ -1,7 +1,7 @@
 import RNFS from 'react-native-fs';
 import AUTH from "../services/auth-service";
 
-const API_URL = 'http://172.16.0.208:50000';
+const API_URL = 'http://192.168.1.34:50000';
 
 const crearPeriodo = async (fechaInicio, fechaFin, periodo) => {
     let b = {

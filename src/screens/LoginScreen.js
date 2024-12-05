@@ -11,7 +11,7 @@ const LoginScreen = ({ navigation, onLogin }) => {
 
   const handleLogin = async (email, password, periodo) => {
     // Llamar a la API de login
-    const response = await fetch('http://172.16.0.208:5001/api/login', {
+    const response = await fetch('http://192.168.1.34:5001/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

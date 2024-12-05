@@ -58,7 +58,7 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
         }));
 
         // Enviar la solicitud con el token en los encabezados
-        const response = await fetch('http://172.16.0.208:5001/api/students', {
+        const response = await fetch('http://192.168.1.34:5001/api/students', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

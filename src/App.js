@@ -26,6 +26,7 @@ import NuevoEstudianteScreen from './screens/NuevoEstudianteScreen';
 import Colores from './styles/colores.js';
 import TextStyles from './styles/texto.js';
 import CustomHeader from './components/header.js'; // El CustomHeader
+import ConfiguracionStudent from './screens/ConfiguracionStudent.js';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -127,7 +128,7 @@ const App = () => {
     )
   }
 
-  const UserTabs = () => {
+  const UserTabs = (navigation) => {
     return (
       <Tab.Navigator
         screenOptions={{
@@ -168,7 +169,7 @@ const App = () => {
         />
         <Tab.Screen
           name="Configuración"
-          children={() => <PerfilScreen onLogout={handleLogout} />}
+          children={() => <ConfiguracionStudent navigation={navigation} onLogout={handleLogout}  />}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Icon name={"settings"} size={size} color={color} />

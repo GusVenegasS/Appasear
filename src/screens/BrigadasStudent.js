@@ -119,7 +119,7 @@ const fetchBrigadas = async () => {
         }
 
         try {
-            const userDetails = await userService.getUserDetails();
+            const userDetails = await authService.getUserDetails();
             if (!userDetails) {
                 throw new Error("No se pudo obtener la información del usuario. El token es inválido o ha expirado.");
             }
@@ -225,18 +225,19 @@ const fetchBrigadas = async () => {
             >
                 {daysOfWeek.map((day) => (
                     <View key={day} style={styles.card}>
-                        <View style={styles.cardHeader}>
-                            <Text style={TextStyles.title3}>
-                                {`Brigadas ${day.charAt(0).toUpperCase() + day.slice(1)}`}
-                            </Text>
-                            <TouchableOpacity onPress={() => toggleExpand(day)}>
-                                <Icon
-                                    name={expandedDays[day] ? "chevron-up" : "chevron-down"}
-                                    size={24}
-                                    color="#008EB6"
-                                />
-                            </TouchableOpacity>
-                        </View>
+                       <TouchableOpacity
+        style={styles.cardHeader}
+        onPress={() => toggleExpand(day)} // Hacer clic en cualquier parte de la cabecera
+    >
+        <Text style={TextStyles.title3}>
+            {`Brigadas ${day.charAt(0).toUpperCase() + day.slice(1)}`}
+        </Text>
+        <Icon
+            name={expandedDays[day] ? "chevron-up" : "chevron-down"}
+            size={24}
+            color="#008EB6"
+        />
+    </TouchableOpacity>
 
                         {expandedDays[day] && (
                             <View style={styles.expandedCard}>

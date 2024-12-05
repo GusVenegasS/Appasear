@@ -19,7 +19,7 @@ const ProfileForm = () => {
           return;
         }
 
-        const response = await fetch('http://172.16.0.208:5001/api/user/profile', {
+        const response = await fetch('http://192.168.1.34:5001/api/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ const ProfileForm = () => {
         return;
       }
 
-      const response = await fetch('http://172.29.35.248:5001/api/telefono', {
+      const response = await fetch('http://192.168.1.34:5001/api/telefono', {
         method: 'PATCH', // Puedes usar PATCH o PUT según tu API
         headers: {
           'Content-Type': 'application/json',

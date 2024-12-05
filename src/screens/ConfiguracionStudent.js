@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
 
-const ConfiguracionStudent = ({ navigation }) => {
+const ConfiguracionStudent = ({ navigation, onLogout }) => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -16,7 +16,7 @@ const ConfiguracionStudent = ({ navigation }) => {
           <Icon name="chevron-right" size={24} color="#008EB6" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.row} onPress={() => { /* Maneja el cierre de sesión */ }}>
+        <TouchableOpacity style={styles.row} onPress={onLogout}>
           <View style={styles.rowContent}>
             <Icon name="log-out" size={24} color="#008EB6" />
             <Text style={[TextStyles.cuerpo, styles.rowText]}>Cerrar Sesión</Text>
@@ -27,6 +27,8 @@ const ConfiguracionStudent = ({ navigation }) => {
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {
