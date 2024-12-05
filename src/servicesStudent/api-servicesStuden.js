@@ -186,7 +186,7 @@ export async function obtenerBrigadasAsignadas(usuario_id, periodoAcademico) {
     try {
         console.log("aqui viendo birgadas del usurio " + periodoAcademico)
         console.log(url)
-        const url = `${API_URL}usuarios/${usuario_id}/brigadas?periodoAcademico=${periodoAcademico}`;
+        const url = `${API_URL}usuarios/${usuario_id}/brigadas/${periodoAcademico}`;
         console.log(url)
         const response = await fetch(url, {
             method: "GET",
