@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import textStyles from '../styles/texto';
 
 const NuevoEstudianteScreen = ({ navigation }) => {
@@ -8,33 +9,34 @@ const NuevoEstudianteScreen = ({ navigation }) => {
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
 
+
   const handleAddStudent = async () => {
     if (!nombre || !correo || !telefono) {
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
-
-    if (telefono.length !== 10) {
-      Alert.alert('Error', 'El número de teléfono debe tener exactamente 10 caracteres');
-      return;
-    }
-
+  
     try {
+      const token = await AsyncStorage.getItem('authToken'); // Recuperar el token
+  
       const estudiante = {
         name: nombre,
         email: correo,
         telefono: telefono,
-        password: 'defaultPassword123', // Puedes ajustar esto o generar una contraseña aleatoria
+        password: 'defaultPassword123',
       };
-
-      const response = await axios.post('http://172.16.0.208:5001/api/students', [estudiante]);
-
+  
+      const response = await axios.post('http://172.16.0.208:5001/api/students', [estudiante], {
+        headers: {
+          Authorization: `Bearer ${token}`, // Enviar el token
+        },
+      });
+  
       if (response.status === 201) {
         Alert.alert('Éxito', 'Estudiante agregado correctamente');
-        navigation.goBack(); // Regresar a la pantalla anterior
+        navigation.goBack();
       }
     } catch (error) {
-      console.error(error);
       Alert.alert('Error', 'Ocurrió un problema al agregar el estudiante');
     }
   };

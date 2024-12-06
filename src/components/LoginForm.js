@@ -18,7 +18,7 @@ const LoginForm = ({ onLoginPress }) => {
   useEffect(() => {
     const fetchPeriodos = async () => {
       try {
-        const response = await fetch('http://192.168.1.34:5001/api/periodos');
+        const response = await fetch('http://192.168.3.69:5001/api/periodos');
         const data = await response.json();
         if (response.status === 200) {
           setPeriodos(data);
