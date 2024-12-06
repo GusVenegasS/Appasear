@@ -258,6 +258,37 @@ const App = () => {
             headerLeft: null,
           }}
         />
+        <Stack.Screen
+          name="VerTarea"
+          component={VerTarea}
+          options={{
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+                <Stack.Screen
+          name="EditarTarea"
+          component={EditarTarea}
+          options={{
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+           <Stack.Screen
+          name="PerfilStudent"
+          component={Usuario}
+          options={{
+            title: 'Información estudiante',
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -13,6 +13,7 @@ import Tarea from '../screens/detalleTarea';
 import Perfil from '../screens/PerfilScreen';
 import PerfilScreen from '../screens/PerfilScreen';
 
+
 export const screens = [
   {
     name: 'Brigadas',
@@ -74,15 +75,25 @@ export const screens = [
     name: 'Brigadas',
     component: BrigadasStudent,
     options: {
-      tabBarIcon: 'person-outline', // Nombre del icono home student
+      tabBarIcon: 'users',
+    },
+    rol: 'user'
+  }
+ ,
+
+  {
+    name: 'Configuración',
+    component: ConfiguracionStudent,
+    options: {
+      tabBarIcon: 'settings-outline', // Nombre del icono home student
     },
     rol: 'user'
   },
   {
-    name: 'Configuración',
+    name: 'PerfilStudent',
     component: PerfilScreen,
     options: {
-      tabBarIcon: 'settings-outline', // Nombre del icono home student
+      tabBarButton: () => null, tabBarIcon: 'info'
     },
     rol: 'user'
   },
