@@ -1,28 +1,23 @@
 import RNFS from 'react-native-fs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AUTH from "../services/auth-service";
 
-const API_URL = 'http://172.29.35.248:50000';
+const API_URL = 'http://192.168.1.34:50000';
 
-const getToken = async () => {
-    try {
-        const token = await AsyncStorage.getItem('authToken');
-        return token;
-    } catch (e) {
-        console.error('Error obteniendo el token', e);
-        return null;
-    }
-};
-
-function crearPeriodo(fechaInicio, fechaFin, periodo) {
+const crearPeriodo = async (fechaInicio, fechaFin, periodo) => {
     let b = {
         fechaInicio: fechaInicio,
         fechaFin: fechaFin,
         periodoAcademico: periodo
     }
     let url = `${API_URL}/crearPeriodo`;
+    const token = await AUTH.getToken();
+
     const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
         body: JSON.stringify(b)
     };
 
@@ -38,13 +33,16 @@ function crearPeriodo(fechaInicio, fechaFin, periodo) {
     });
 }
 
-function obtenerBrigadas(periodo) {
+const obtenerBrigadas = async (periodo) => {
     console.log("bodyBrigadas: " + periodo);
     let url = `${API_URL}/obtenerBrigadas?periodoAcademico=${periodo}`;
-    console.log(url)
+    const token = await AUTH.getToken();
     const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
     };
 
     return new Promise((resolve, reject) => {
@@ -62,13 +60,13 @@ function obtenerBrigadas(periodo) {
 const obtenerUsuarios = async (periodo) => {
     console.log("body: " + periodo);
     let url = `${API_URL}/usuarios?periodoAcademico=${periodo}`;
-    const token = await getToken();
-    console.log("token: " + token);
+    const token = await AUTH.getToken();
+
     const requestOptions = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            "Authorization": "Bearer " + token
         },
     };
 
@@ -84,12 +82,17 @@ const obtenerUsuarios = async (periodo) => {
     });
 }
 
-function verTarea(fecha, brigadaID, periodo) {
+const verTarea = async (fecha, brigadaID, periodo) => {
     console.log("body: " + fecha);
     let url = `${API_URL}/verTarea?periodoAcademico=${periodo}&fechaQuery=${fecha}&brigada_id=${brigadaID}`;
+    const token = await AUTH.getToken();
+
     const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
     };
 
     return new Promise((resolve, reject) => {
@@ -104,12 +107,17 @@ function verTarea(fecha, brigadaID, periodo) {
     });
 }
 
-function verificarPeriodo(periodo) {
+const verificarPeriodo = async (periodo) => {
     console.log("periodo: " + periodo);
     let url = `${API_URL}/verificarPeriodo?periodo=${periodo}`;
+    const token = await AUTH.getToken();
+
     const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
     };
 
     return new Promise((resolve, reject) => {
@@ -124,12 +132,17 @@ function verificarPeriodo(periodo) {
     });
 }
 
-function finalizarPeriodo(periodo) {
+const finalizarPeriodo = async (periodo) => {
     console.log("periodo: " + periodo);
     let url = `${API_URL}/finalizarPeriodo?periodo=${periodo}`;
+    const token = await AUTH.getToken();
+
     const requestOptions = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
     };
 
     return new Promise((resolve, reject) => {
@@ -144,13 +157,18 @@ function finalizarPeriodo(periodo) {
     });
 }
 
-function descargarReporte(periodo) {
+const descargarReporte = async (periodo) => {
     console.log("aquiiiiiiiiii")
 
     let url = `${API_URL}/reporteAsistencia?periodoAcademico=${periodo}`;
+    const token = await AUTH.getToken();
+
     const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+        headers: {
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Authorization": "Bearer " + token
+        },
     };
 
 

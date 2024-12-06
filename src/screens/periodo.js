@@ -6,6 +6,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { Calendar } from 'react-native-calendars';
 import TextStyles from '../styles/texto';
+import AUTH from "../services/auth-service";
 import API from "../services/api-services";
 import LottieView from 'lottie-react-native';
 
@@ -21,11 +22,11 @@ export default function VerificarPeriodo() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalAnimation, setModalAnimation] = useState(null);
     const [isError, setIsError] = useState(false);
-    const periodo = "2024-B";
 
     // Verificar el periodo al iniciar el componente
     const verificar = async () => {
         try {
+            const { periodo } = await AUTH.getUserDetails();
             const response = await API.verificarPeriodo(periodo);
             console.log(response)
             if (response.status === 200) {

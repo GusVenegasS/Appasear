@@ -18,7 +18,7 @@ const LoginForm = ({ onLoginPress }) => {
   useEffect(() => {
     const fetchPeriodos = async () => {
       try {
-        const response = await fetch('http://172.29.35.248:5001/api/periodos');
+        const response = await fetch('http://192.168.1.34:5001/api/periodos');
         const data = await response.json();
         if (response.status === 200) {
           setPeriodos(data);
@@ -38,30 +38,7 @@ const LoginForm = ({ onLoginPress }) => {
   }, []);
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch('http://172.29.35.248:5001/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password, periodo: selectedPeriodo }),
-      });
-
-      const data = await response.json();
-
-      if (response.status === 200) {
-        await AsyncStorage.setItem('authToken', data.token); // Guardar el token
-        const rol = await authService.getRol();
-        console.log("Rol obtenido:", rol);
-        Alert.alert('Éxito', 'Inicio de sesión exitoso');
-        onLoginPress(); // Navegar a la pantalla de Brigadas
-      } else {
-        Alert.alert('Error', data.message || 'Inicio de sesión fallido');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'No se pudo conectar con el servidor');
-      console.error('Error al iniciar sesión:', error);
-    }
+    onLoginPress(email, password, selectedPeriodo);
   };
 
   return (

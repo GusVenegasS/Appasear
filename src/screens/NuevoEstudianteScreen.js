@@ -27,7 +27,7 @@ const NuevoEstudianteScreen = ({ navigation }) => {
         password: 'defaultPassword123', // Puedes ajustar esto o generar una contraseña aleatoria
       };
 
-      const response = await axios.post('http://172.29.35.248:5001/api/students', [estudiante]);
+      const response = await axios.post('http://172.16.0.208:5001/api/students', [estudiante]);
 
       if (response.status === 201) {
         Alert.alert('Éxito', 'Estudiante agregado correctamente');

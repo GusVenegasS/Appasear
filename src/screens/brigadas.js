@@ -6,6 +6,7 @@ import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
 import { Calendar, LocaleConfig } from 'react-native-calendars'; // Importamos el componente Calendar
 import API from "../services/api-services";
+import AUTH from "../services/auth-service";
 import { Alert } from 'react-native';
 
 // Configuración de locale para español (es)
@@ -36,11 +37,11 @@ const Brigadas = ({ navigation }) => {
     const [expandedDays, setExpandedDays] = useState({}); // Guardamos el estado expandido por día
     const [selectedBrigada, setSelectedBrigada] = useState(null); // Guardamos la brigada seleccionada para mostrar el calendario
     const [refreshing, setRefreshing] = useState(false); // Estado de recarga
-    const periodo = "2024-B";
 
     const fetchData = async () => {
         setLoading(true); // Empieza la carga
         try {
+            const { periodo } = await AUTH.getUserDetails();
             const respuesta = await API.obtenerBrigadas(periodo);
             if (respuesta.status === 404) {
                 setApiMessage(respuesta.message); // No hay brigadas
