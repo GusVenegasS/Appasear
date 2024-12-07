@@ -12,6 +12,8 @@ import Periodo from '../screens/periodo';
 import Tarea from '../screens/detalleTarea';
 import Perfil from '../screens/PerfilScreen';
 import PerfilScreen from '../screens/PerfilScreen';
+import CambiarContrasenaScreen from './screens/CambiarContrasenaScreen.js';
+import ContrasenaScreen from './screens/ContrasenaScreen.js';
 
 
 export const screens = [
@@ -105,5 +107,19 @@ export const screens = [
       tabBarButton: () => null, tabBarIcon: 'info'
     },
     rol: 'admin'
+  },
+  {
+    name: 'CambiarContrasenaScreen',
+    component: CambiarContrasenaScreen,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
+  },
+  {
+    name: 'ContrasenaScreen',
+    component: ContrasenaScreen,
+    options: {
+      tabBarButton: () => null, tabBarIcon: 'info'
+    },
   },
 ];

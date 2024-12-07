@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
 
-const ProfileForm = () => {
+const ProfileForm = ({navegarPress}) => {
   const [telefono, setTelefono] = useState('');
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -19,7 +22,7 @@ const ProfileForm = () => {
           return;
         }
 
-        const response = await fetch('http://192.168.3.69:5001/api/user/profile', {
+        const response = await fetch('http://192.168.100.3:5001/api/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,7 +54,7 @@ const ProfileForm = () => {
         return;
       }
 
-      const response = await fetch('http://192.168.3.69:5001/api/telefono', {
+      const response = await fetch('http://192.168.100.3:5001/api/telefono', {
         method: 'PATCH', // Puedes usar PATCH o PUT según tu API
         headers: {
           'Content-Type': 'application/json',
@@ -71,12 +74,16 @@ const ProfileForm = () => {
     }
   };
 
+  const handleNavegar = () => {
+    navegarPress();
+  };
+
   return (
     <View style={styles.formContainer}>
       {/* Campo de nombre no editable */}
       <Text style={textStyles.title3}>Nombre:</Text>
       <View style={styles.inputContainer}>
-        <TextInput value={nombre} editable={false} style={textStyles.cuerpo} />
+        <TextInput value={nombre} editable={false} style={[textStyles.cuerpo, { flex: 1, paddingRight: 50 }]} />
         <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
       </View>
 
@@ -86,7 +93,7 @@ const ProfileForm = () => {
         <TextInput
           value={correo}
           editable={false}
-          style={textStyles.cuerpo}
+          style={[textStyles.cuerpo, { flex: 1, paddingRight: 50 }]}
           keyboardType="email-address"
         />
         <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
@@ -99,7 +106,7 @@ const ProfileForm = () => {
           value={telefono}
           onChangeText={setTelefono}
           placeholder="Número de celular"
-          style={textStyles.cuerpo}
+          style={[textStyles.cuerpo, { flex: 1, paddingRight: 50 }]}
           keyboardType="phone-pad"
         />
         <Ionicons name="call-outline" size={24} color="gray" style={styles.icon} />
@@ -108,6 +115,10 @@ const ProfileForm = () => {
       {/* Botón de guardar */}
       <TouchableOpacity style={styles.loginButton} onPress={guardarTelefono}>
         <Text style={textStyles.title3}>Guardar</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.loginButton} onPress={handleNavegar}>
+        <Text style={textStyles.title3}>Cambiar Contraseña</Text>
       </TouchableOpacity>
     </View>
   );

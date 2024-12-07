@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import textStyles from '../styles/texto';
 
 const NuevoEstudianteScreen = ({ navigation }) => {
+  const [usuarioId, setusuarioId] = useState('');
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -20,13 +21,15 @@ const NuevoEstudianteScreen = ({ navigation }) => {
       const token = await AsyncStorage.getItem('authToken'); // Recuperar el token
   
       const estudiante = {
+        usuarioId: usuarioId,
         name: nombre,
         email: correo,
         telefono: telefono,
         password: 'defaultPassword123',
+        rol: 'user',
       };
   
-      const response = await axios.post('http://172.16.0.208:5001/api/students', [estudiante], {
+      const response = await axios.post('http://192.168.100.3:5001/api/students', [estudiante], {
         headers: {
           Authorization: `Bearer ${token}`, // Enviar el token
         },
@@ -52,6 +55,18 @@ const NuevoEstudianteScreen = ({ navigation }) => {
               value={nombre}
               onChangeText={setNombre}
               placeholder="Ingresa el nombre completo"
+            />
+          </View>
+
+          <Text style={textStyles.title3}>Código Único</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={textStyles.cuerpo}
+              value={usuarioId}
+              onChangeText={setusuarioId}
+              keyboardType="numeric"
+              placeholder="Ingresa el código único"
+              maxLength={9} 
             />
           </View>
 

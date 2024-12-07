@@ -8,7 +8,7 @@ const ContrasenaScreen = () => {
 
   const handleChangePassword = async () => {
     try {
-      const response = await axios.post('http://192.168.100.3:5001/api/cambiar-contrasena', { correo });
+      const response = await axios.post('http://192.168.100.3:5001/api/olvidar-contrasena', { correo });
       Alert.alert('Éxito', response.data.message);
     } catch (error) {
       console.error(error);

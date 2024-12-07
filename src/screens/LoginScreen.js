@@ -5,13 +5,12 @@ import styles from '../styles/LoginScreenStyles';
 import Logo from '../components/Logo';
 import LoginForm from '../components/LoginForm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AUTH from '../services/auth-service'
 
 const LoginScreen = ({ navigation, onLogin }) => {
 
   const handleLogin = async (email, password, periodo) => {
     // Llamar a la API de login
-    const response = await fetch('http://192.168.3.69:5001/api/login', {
+    const response = await fetch('http://192.168.100.3:5001/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,6 +37,9 @@ const LoginScreen = ({ navigation, onLogin }) => {
     }
   };
 
+  const navegarCambiarContrasena = async () => {
+    navigation.navigate('ContrasenaScreen'); 
+  }
 
   return (
     <View style={styles.container}>
@@ -50,7 +52,7 @@ const LoginScreen = ({ navigation, onLogin }) => {
         <Logo />
 
         {/* Formulario de Login */}
-        <LoginForm onLoginPress={handleLogin} />
+        <LoginForm onLoginPress={handleLogin} navegarPress={navegarCambiarContrasena}/>
       </ScrollView>
     </View>
   );

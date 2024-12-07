@@ -27,6 +27,8 @@ import Colores from './styles/colores.js';
 import TextStyles from './styles/texto.js';
 import CustomHeader from './components/header.js'; // El CustomHeader
 import ConfiguracionStudent from './screens/ConfiguracionStudent.js';
+import CambiarContrasenaScreen from './screens/CambiarContrasenaScreen.js';
+import ContrasenaScreen from './screens/ContrasenaScreen.js';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -65,6 +67,17 @@ const App = () => {
           >
             {props => <LoginScreen {...props} onLogin={handleLogin} />}
           </Stack.Screen>
+          <Stack.Screen
+          name="ContrasenaScreen"
+          component={ContrasenaScreen}
+          options={{
+            title: 'Reestablecer contraseña',
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -169,7 +182,7 @@ const App = () => {
         />
         <Tab.Screen
           name="Configuración"
-          children={() => <ConfiguracionStudent navigation={navigation} onLogout={handleLogout}  />}
+          children={() => <ConfiguracionStudent navigation={navigation} onLogout={handleLogout} />}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Icon name={"settings"} size={size} color={color} />
@@ -268,7 +281,7 @@ const App = () => {
             headerLeft: null,
           }}
         />
-                <Stack.Screen
+        <Stack.Screen
           name="EditarTarea"
           component={EditarTarea}
           options={{
@@ -278,11 +291,22 @@ const App = () => {
             headerLeft: null,
           }}
         />
-           <Stack.Screen
+        <Stack.Screen
           name="PerfilStudent"
           component={Usuario}
           options={{
             title: 'Información estudiante',
+            headerStyle: { backgroundColor: Colores.color1 },
+            headerTitleAlign: 'center',
+            headerTitleStyle: TextStyles.title1,
+            headerLeft: null,
+          }}
+        />
+        <Stack.Screen
+          name="CambiarContrasenaScreen"
+          component={CambiarContrasenaScreen}
+          options={{
+            title: 'Nueva Contraseña',
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,

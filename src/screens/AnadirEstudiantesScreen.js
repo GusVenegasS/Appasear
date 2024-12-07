@@ -51,14 +51,16 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
         const studentsData = jsonData.slice(1).map((row) => ({
+          usuarioId: row[1],
           name: row[2],
           email: row[4],
           telefono: row[5],
           password: generateRandomPassword(),
+          rol: 'user',
         }));
 
         // Enviar la solicitud con el token en los encabezados
-        const response = await fetch('http://192.168.3.69:5001/api/students', {
+        const response = await fetch('http://192.168.100.3:5001/api/students', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

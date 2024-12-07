@@ -3,11 +3,12 @@ import { View, TouchableOpacity, Text, TextInput, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
+import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
 import authService from '../services/auth-service';
 
-const LoginForm = ({ onLoginPress }) => {
+const LoginForm = ({ onLoginPress, navegarPress}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // Estado para alternar visibilidad de la contraseña
@@ -15,10 +16,13 @@ const LoginForm = ({ onLoginPress }) => {
   const [selectedPeriodo, setSelectedPeriodo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Usar el hook useNavigation para obtener el objeto navigation
+  const navigation = useNavigation();
+
   useEffect(() => {
     const fetchPeriodos = async () => {
       try {
-        const response = await fetch('http://192.168.3.69:5001/api/periodos');
+        const response = await fetch('http://192.168.100.3:5001/api/periodos');
         const data = await response.json();
         if (response.status === 200) {
           setPeriodos(data);
@@ -39,6 +43,10 @@ const LoginForm = ({ onLoginPress }) => {
 
   const handleLogin = async () => {
     onLoginPress(email, password, selectedPeriodo);
+  };
+
+  const handleNavegar = () => {
+    navegarPress();
   };
 
   return (
@@ -123,7 +131,7 @@ const LoginForm = ({ onLoginPress }) => {
       </TouchableOpacity>
 
       {/* Opción de "¿Olvidaste tu contraseña?" */}
-      <TouchableOpacity onPress={() => { }}>
+      <TouchableOpacity onPress={handleNavegar}>
         <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
     </View>
