@@ -1,81 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
+import {fetchUserProfile, updatePhoneNumber} from '../services/api-auth-service';
 
-const ProfileForm = ({navegarPress}) => {
+const ProfileForm = ({ navegarPress }) => {
   const [telefono, setTelefono] = useState('');
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
 
-  const navigation = useNavigation();
-
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const loadUserProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
-        if (!token) {
-          Alert.alert('Error', 'No se ha encontrado el token de autenticación.');
-          return;
-        }
-
-        const response = await fetch('http://192.168.100.3:5001/api/user/profile', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error en la solicitud, código de estado: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setNombre(data.nombre);
-        setCorreo(data.correo);
-        setTelefono(data.telefono);
+        const profile = await fetchUserProfile();
+        setNombre(profile.nombre);
+        setCorreo(profile.correo);
+        setTelefono(profile.telefono);
       } catch (error) {
         console.error(error);
         Alert.alert('Error', 'Ocurrió un problema al obtener los datos.');
       }
     };
 
-    fetchUserProfile();
+    loadUserProfile();
   }, []);
 
   const guardarTelefono = async () => {
     try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token) {
-        Alert.alert('Error', 'No se ha encontrado el token de autenticación.');
-        return;
-      }
-
-      const response = await fetch('http://192.168.100.3:5001/api/telefono', {
-        method: 'PATCH', // Puedes usar PATCH o PUT según tu API
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ telefono }), // Enviamos solo el campo que se actualiza
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error al actualizar, código de estado: ${response.status}`);
-      }
-
+      await updatePhoneNumber(telefono);
       Alert.alert('Éxito', 'Número de teléfono actualizado correctamente.');
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Ocurrió un problema al guardar los cambios.');
     }
-  };
-
-  const handleNavegar = () => {
-    navegarPress();
   };
 
   return (
@@ -117,7 +75,7 @@ const ProfileForm = ({navegarPress}) => {
         <Text style={textStyles.title3}>Guardar</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleNavegar}>
+      <TouchableOpacity style={styles.loginButton} onPress={navegarPress}>
         <Text style={textStyles.title3}>Cambiar Contraseña</Text>
       </TouchableOpacity>
     </View>

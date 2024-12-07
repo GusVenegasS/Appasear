@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
+import {changePassword} from '../services/api-auth-service';
 
 const CambiarContrasenaScreen = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -15,34 +15,15 @@ const CambiarContrasenaScreen = () => {
     }
 
     try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token) {
-        Alert.alert('Error', 'No se ha encontrado el token de autenticación.');
-        return;
-      }
-
-      const response = await fetch('http://192.168.100.3:5001/api/cambiar-contrasena', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ newPassword }),  // Solo enviamos la nueva contraseña
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error al cambiar la contraseña, código de estado: ${response.status}`);
-      }
-
+      await changePassword(newPassword);
       Alert.alert('Éxito', 'Contraseña cambiada correctamente.');
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Ocurrió un problema al cambiar la contraseña.');
+      Alert.alert('Error', error.message || 'Ocurrió un problema al cambiar la contraseña.');
     }
   };
 
   return (
-
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}

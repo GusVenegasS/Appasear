@@ -4,25 +4,16 @@ import { View, ScrollView, Alert } from 'react-native';
 import styles from '../styles/LoginScreenStyles';
 import Logo from '../components/Logo';
 import LoginForm from '../components/LoginForm';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {login} from '../services/api-auth-service';
 
 const LoginScreen = ({ navigation, onLogin }) => {
-
   const handleLogin = async (email, password, periodo) => {
-    // Llamar a la API de login
-    const response = await fetch('http://192.168.100.3:5001/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password, periodo: periodo }),
-    });
+    try {
+      // Llamar al servicio de autenticación
+      const data = await login(email, password, periodo);
 
-    const data = await response.json();
-
-    if (response.status === 200) {
-      await AsyncStorage.setItem('authToken', data.token);
-      onLogin(data); // Pasamos los datos del usuario a AppNavigator
+      // Pasamos los datos del usuario a AppNavigator
+      onLogin(data);
 
       // Redirigir dependiendo del rol
       if (data.user.rol === 'admin') {
@@ -32,14 +23,14 @@ const LoginScreen = ({ navigation, onLogin }) => {
         Alert.alert('Éxito', 'Inicio de sesión exitoso');
         navigation.navigate('Student'); // Pantalla de Estudiante
       }
-    } else {
-      Alert.alert('Error', 'No se pudo conectar con el servidor');
+    } catch (error) {
+      Alert.alert('Error', error.message); // Mostrar el mensaje de error
     }
   };
 
-  const navegarCambiarContrasena = async () => {
-    navigation.navigate('ContrasenaScreen'); 
-  }
+  const navegarCambiarContrasena = () => {
+    navigation.navigate('ContrasenaScreen');
+  };
 
   return (
     <View style={styles.container}>
@@ -52,7 +43,7 @@ const LoginScreen = ({ navigation, onLogin }) => {
         <Logo />
 
         {/* Formulario de Login */}
-        <LoginForm onLoginPress={handleLogin} navegarPress={navegarCambiarContrasena}/>
+        <LoginForm onLoginPress={handleLogin} navegarPress={navegarCambiarContrasena} />
       </ScrollView>
     </View>
   );

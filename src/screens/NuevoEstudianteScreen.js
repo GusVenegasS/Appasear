@@ -1,46 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {addStudent} from '../services/api-auth-service'; // Importamos el servicio
 import textStyles from '../styles/texto';
 
 const NuevoEstudianteScreen = ({ navigation }) => {
-  const [usuarioId, setusuarioId] = useState('');
+  const [usuarioId, setUsuarioId] = useState('');
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
-
 
   const handleAddStudent = async () => {
     if (!nombre || !correo || !telefono) {
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
-  
+
     try {
-      const token = await AsyncStorage.getItem('authToken'); // Recuperar el token
-  
-      const estudiante = {
-        usuarioId: usuarioId,
-        name: nombre,
-        email: correo,
-        telefono: telefono,
-        password: 'defaultPassword123',
-        rol: 'user',
-      };
-  
-      const response = await axios.post('http://192.168.100.3:5001/api/students', [estudiante], {
-        headers: {
-          Authorization: `Bearer ${token}`, // Enviar el token
-        },
-      });
-  
-      if (response.status === 201) {
-        Alert.alert('Éxito', 'Estudiante agregado correctamente');
-        navigation.goBack();
-      }
+      // Llamamos al servicio para agregar al estudiante
+      await addStudent(usuarioId, nombre, correo, telefono);
+
+      Alert.alert('Éxito', 'Estudiante agregado correctamente');
+      navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'Ocurrió un problema al agregar el estudiante');
+      Alert.alert('Error', error.message || 'Ocurrió un problema al agregar el estudiante');
     }
   };
 
@@ -63,7 +45,7 @@ const NuevoEstudianteScreen = ({ navigation }) => {
             <TextInput
               style={textStyles.cuerpo}
               value={usuarioId}
-              onChangeText={setusuarioId}
+              onChangeText={setUsuarioId}
               keyboardType="numeric"
               placeholder="Ingresa el código único"
               maxLength={9} 
@@ -89,7 +71,7 @@ const NuevoEstudianteScreen = ({ navigation }) => {
               onChangeText={(text) => setTelefono(text.replace(/[^0-9]/g, '').slice(0, 10))}
               placeholder="Ingresa el número de teléfono"
               keyboardType="numeric"
-              maxLength={10} // Restringe la entrada a un máximo de 10 caracteres
+              maxLength={10}
             />
           </View>
 

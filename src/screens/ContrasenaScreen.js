@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import axios from 'axios';
+import {requestPasswordReset} from '../services/api-auth-service'; // Importa el servicio de API
 import textStyles from '../styles/texto';
 
 const ContrasenaScreen = () => {
@@ -8,11 +8,11 @@ const ContrasenaScreen = () => {
 
   const handleChangePassword = async () => {
     try {
-      const response = await axios.post('http://192.168.100.3:5001/api/olvidar-contrasena', { correo });
-      Alert.alert('Éxito', response.data.message);
+      const result = await requestPasswordReset(correo);
+      Alert.alert('Éxito', result.message);
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', error.response?.data?.message || 'Ocurrió un error al cambiar la contraseña.');
+      Alert.alert('Error', error || 'Ocurrió un error al cambiar la contraseña.');
     }
   };
 

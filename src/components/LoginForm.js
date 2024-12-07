@@ -6,7 +6,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
-import authService from '../services/auth-service';
+import { fetchPeriodos } from '../services/api-auth-service';
 
 const LoginForm = ({ onLoginPress, navegarPress}) => {
   const [email, setEmail] = useState('');
@@ -20,25 +20,19 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const fetchPeriodos = async () => {
+    const cargarPeriodos = async () => {
       try {
-        const response = await fetch('http://192.168.100.3:5001/api/periodos');
-        const data = await response.json();
-        if (response.status === 200) {
-          setPeriodos(data);
-          console.log('Periodos obtenidos:', data);
-        } else {
-          Alert.alert('Error', 'No se pudieron cargar los períodos académicos');
-        }
+        const data = await fetchPeriodos();
+        setPeriodos(data);
+        console.log('Periodos obtenidos:', data);
       } catch (error) {
-        Alert.alert('Error', 'Error al cargar los períodos académicos');
-        console.error('Error al obtener períodos:', error);
+        Alert.alert('Error', error.message || 'Error al cargar los períodos académicos');
       } finally {
         setIsLoading(false); // Se actualiza el estado de carga
       }
     };
 
-    fetchPeriodos();
+    cargarPeriodos();
   }, []);
 
   const handleLogin = async () => {

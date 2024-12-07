@@ -8,7 +8,7 @@ const ConfiguracionStudent = ({ navigation, onLogout }) => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <TouchableOpacity style={styles.row} onPress={() => { /* Navega a la pantalla de Perfil */ }}>
+        <TouchableOpacity style={styles.row} onPress={() => navigation.navigate('Perfil')}>
           <View style={styles.rowContent}>
             <Icon name="user" size={24} color="#008EB6" />
             <Text style={[TextStyles.cuerpo, styles.rowText]}>Perfil</Text>

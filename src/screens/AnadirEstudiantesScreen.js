@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNBlobUtil from 'react-native-blob-util';
 import * as XLSX from 'xlsx';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Asegúrate de tener AsyncStorage
 import styles from '../styles/StudentsStyles';
 import textstyles from '../styles/texto';
+import {uploadStudentsData} from '../services/api-auth-service';
 
 const AnadirEstudiantesScreen = ({ navigation }) => {
   const generateRandomPassword = (length = 12) => {
@@ -19,14 +19,6 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
 
   const handleExcelUpload = async () => {
     try {
-      // Obtener el token del AsyncStorage
-      const token = await AsyncStorage.getItem('authToken');
-
-      if (!token) {
-        Alert.alert('Error', 'No se encontró el token de autenticación');
-        return;
-      }
-
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.xlsx],
       });
@@ -39,9 +31,6 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
           return;
         }
 
-        console.log('File URI:', fileUri);
-
-        // Leer el archivo directamente desde la URI
         const fileContent = await RNBlobUtil.fs.readFile(fileUri, 'base64');
 
         const workbook = XLSX.read(fileContent, { type: 'base64' });
@@ -59,22 +48,9 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
           rol: 'user',
         }));
 
-        // Enviar la solicitud con el token en los encabezados
-        const response = await fetch('http://192.168.100.3:5001/api/students', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // Aquí se agrega el token en los encabezados
-          },
-          body: JSON.stringify(studentsData),
-        });
+        await uploadStudentsData(studentsData);
 
-        if (response.ok) {
-          Alert.alert('Éxito', 'Los estudiantes fueron agregados correctamente.');
-        } else {
-          const errorData = await response.json();
-          Alert.alert('Error', errorData.message || 'Ocurrió un problema al enviar los datos al servidor.');
-        }
+        Alert.alert('Éxito', 'Los estudiantes fueron agregados correctamente.');
       } else {
         Alert.alert('Error', 'No se seleccionó ningún archivo.');
       }
