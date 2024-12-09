@@ -1,4 +1,5 @@
 import React from 'react';
+import TextStyles from '../styles/texto';
 import { View, Text, StyleSheet, Image } from 'react-native';
 
 const InfoEstudiante = ({ route }) => {
@@ -17,10 +18,10 @@ const InfoEstudiante = ({ route }) => {
 
             {/* Tarjeta con la información del usuario */}
             <View style={styles.card}>
-                <Text style={styles.cardText}>Nombre: {user.nombre}</Text>
-                <Text style={styles.cardText}>Celular: {user.telefono}</Text>
-                <Text style={styles.cardText}>Correo: {user.correo}</Text>
-                <Text style={styles.cardText}>Periodo Académico: {user.periodoAcademico}</Text>
+                <Text style={[TextStyles, styles.cardText]}>Nombre: {user.nombre}</Text>
+                <Text style={[TextStyles, styles.cardText]}>Celular: {user.telefono}</Text>
+                <Text style={[TextStyles, styles.cardText]}>Correo: {user.correo}</Text>
+                <Text style={[TextStyles, styles.cardText]}>Periodo Académico: {user.periodoAcademico}</Text>
             </View>
         </View>
     );

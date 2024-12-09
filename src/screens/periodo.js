@@ -142,10 +142,10 @@ export default function VerificarPeriodo() {
     const FechaInput = ({ label, value, editable, onPress, calendarVisible }) => {
         return (
             <View style={styles.inputContainer}>
-                <Text style={styles.label}>{label}</Text>
+                <Text style={[styles.label, TextStyles.tituloCard]}>{label}</Text>
                 <View style={styles.inputWrapper}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, TextStyles.cuerpo]}
                         value={value}
                         editable={editable}
                     />
@@ -192,7 +192,7 @@ export default function VerificarPeriodo() {
                             loop={!isError}
                             style={styles.lottie}
                         />
-                        <Text style={styles.modalText}>{mensaje}</Text>
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
                         {isError && (
                             <TouchableOpacity
                                 style={styles.closeButton}
@@ -254,6 +254,7 @@ export default function VerificarPeriodo() {
                         <View style={styles.buttonContainer}>
                             <Button
                                 title="Finalizar"
+                                styles={TextStyles.buttonText}
                                 onPress={finalizar}
                                 color="#007BFF"
                             />
@@ -285,7 +286,7 @@ export default function VerificarPeriodo() {
                             onPress={() => { }}
                             calendarVisible={false}
                         />
-                        <Text style={styles.label}>Este período ya fue finalizado, puedes descargar el reporte</Text>
+                        <Text style={[styles.label, TextStyles.cuerpo]}>Este período ya fue finalizado, puedes descargar el reporte</Text>
                         <View style={styles.buttonContainer}>
                             <Button
                                 title="Descargar reporte"
@@ -304,7 +305,7 @@ export default function VerificarPeriodo() {
                         loop
                         style={styles.lottie}
                     />
-                    <Text style={styles.modalText}>{mensaje}</Text>
+                    <Text style={[styles.modalText, TextStyles.cuerpo]}>{mensaje}</Text>
                 </View>
             )}
         </ScrollView>
