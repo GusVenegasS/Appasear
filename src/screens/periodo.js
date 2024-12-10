@@ -76,6 +76,7 @@ export default function VerificarPeriodo() {
 
     const crear = async (fechaInicio, fechaFin) => {
         try {
+            const { periodo } = await AUTH.getUserDetails();
             const respuestaCrear = await API.crearPeriodo(fechaInicio, fechaFin, periodo);
             setMensaje(respuestaCrear.message);
 
@@ -103,6 +104,7 @@ export default function VerificarPeriodo() {
 
     const finalizar = async () => {
         try {
+            const { periodo } = await AUTH.getUserDetails();
             const respuestaFinalizar = await API.finalizarPeriodo(periodo);
             setMensaje(respuestaFinalizar.message);
             if (respuestaFinalizar.status === 200) {

@@ -3,7 +3,7 @@
 import authService from "../services/auth-service";
 import {getToken} from "../services/auth-service"
 
-const API_URL = 'http://192.168.100.3:50002/';
+const API_URL = 'https://appbackstudent.ashysea-2c880eb9.australiaeast.azurecontainerapps.io';
 
 
 
@@ -102,7 +102,7 @@ async function obtenerBrigadasDisponibles(periodo) {
 export async function seleccionarBrigadas(usuario_id, brigada_ids, periodoAcademico) {
     try {
         const token = await authService.getToken();
-        let url = `${API_URL}brigadas/seleccionar`;
+        let url = `${API_URL}/brigadas/seleccionar`;
         console.log("URL de solicitud:", url);
         console.log("Datos enviados:", { usuario_id, brigada_ids, periodoAcademico });
 
@@ -142,7 +142,7 @@ async function obtenerTareasPorBrigada(usuarioId, periodoAcademico) {
 
     try {
         // Construir la URL
-        const url = `${API_URL}tareas/brigada?usuario_id=${usuarioId}&periodoAcademico=${periodoAcademico}`;
+        const url = `${API_URL}/tareas/brigada?usuario_id=${usuarioId}&periodoAcademico=${periodoAcademico}`;
         console.log("URL:", url);
 
         // Obtener el token utilizando authService.getToken()
@@ -266,7 +266,7 @@ export async function obtenerBrigadasAsignadas(usuario_id, periodoAcademico) {
         const token = await authService.getToken();
 
     
-        const url = `${API_URL}usuarios/${usuario_id}/brigadas/${periodoAcademico}`;
+        const url = `${API_URL}/usuarios/${usuario_id}/brigadas/${periodoAcademico}`;
         console.log(url)
         const response = await fetch(url, {
             method: "GET",

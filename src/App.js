@@ -141,7 +141,7 @@ const App = () => {
     )
   }
 
-  const UserTabs = (navigation) => {
+  const UserTabs = ({ navigation }) => {
     return (
       <Tab.Navigator
         screenOptions={{
@@ -171,7 +171,7 @@ const App = () => {
           component={BrigadasStudent}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name={"user"} size={size} color={color} />
+              <Icon name={"people-outline"} size={size} color={color} />
             ),
             headerStyle: {
               backgroundColor: Colores.color1,  // Fondo naranja
