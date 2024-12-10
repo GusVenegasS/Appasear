@@ -171,7 +171,7 @@ const App = () => {
           component={BrigadasStudent}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name={"people-outline"} size={size} color={color} />
+              <Icon name={"people"} size={size} color={color} />
             ),
             headerStyle: {
               backgroundColor: Colores.color1,  // Fondo naranja
@@ -277,8 +277,7 @@ const App = () => {
           options={{
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
-            headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerTitleStyle: TextStyles.title1,            
           }}
         />
         <Stack.Screen
