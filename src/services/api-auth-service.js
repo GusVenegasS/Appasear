@@ -207,7 +207,7 @@ export const login = async (email, password, periodo) => {
     }
 };
 
-export const addStudent = async (usuarioId, nombre, correo, telefono) => {
+export const addStudent = async (usuarioId, nombre, correo, telefono, contraseña) => {
     try {
         const token = await AsyncStorage.getItem('authToken'); // Recuperar el token
 
@@ -216,7 +216,7 @@ export const addStudent = async (usuarioId, nombre, correo, telefono) => {
             name: nombre,
             email: correo,
             telefono,
-            password: 'defaultPassword123',
+            password: contraseña,
             rol: 'user',
         };
 

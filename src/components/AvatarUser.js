@@ -62,11 +62,15 @@ const AvatarUser = () => {
       <TouchableOpacity onPress={pickImage}>
         <Image
           style={styles.avatar}
-          source={{
-            uri: imagenPerfil?.startsWith('data:image/')
-              ? imagenPerfil // Usa la imagen con prefijo existente.
-              : `data:image/png;base64,${imagenPerfil}`, // Agrega prefijo si falta.
-          }}
+          source={
+            imagenPerfil
+              ? {
+                  uri: imagenPerfil?.startsWith('data:image/')
+                    ? imagenPerfil // Usa la imagen con prefijo existente.
+                    : `data:image/png;base64,${imagenPerfil}`, // Agrega prefijo si falta.
+                }
+              : require('../assets/images/avatar_placeholder.png') // Imagen predeterminada.
+          }
         />
       </TouchableOpacity>
     </View>

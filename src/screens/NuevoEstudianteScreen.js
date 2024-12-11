@@ -9,6 +9,15 @@ const NuevoEstudianteScreen = ({ navigation }) => {
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
 
+  const generateRandomPassword = (length = 12) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
+
   const handleAddStudent = async () => {
     if (!nombre || !correo || !telefono) {
       Alert.alert('Error', 'Por favor completa todos los campos');
@@ -17,7 +26,7 @@ const NuevoEstudianteScreen = ({ navigation }) => {
 
     try {
       // Llamamos al servicio para agregar al estudiante
-      await addStudent(usuarioId, nombre, correo, telefono);
+      await addStudent(usuarioId, nombre, correo, telefono, generateRandomPassword());
 
       Alert.alert('Éxito', 'Estudiante agregado correctamente');
       navigation.goBack();
