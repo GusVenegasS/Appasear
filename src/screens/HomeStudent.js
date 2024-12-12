@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginBottom: 10,
         fontFamily: 'Nunito-Bold',
+        color: '#6c6462'
     },
     emptyMessage: {
         fontSize: 16,
