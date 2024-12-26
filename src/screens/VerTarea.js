@@ -53,9 +53,9 @@ const VerTarea = ({ route }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
           <Text style={styles.title}>Atrás</Text>
-          
+
         </TouchableOpacity>
-       
+
       </View>
 
       <View style={styles.form}>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     marginRight: 10,
-   
+
   },
   title: {
 
@@ -130,13 +130,13 @@ const styles = StyleSheet.create({
 
   },
   textValue: {
-    fontSize: 16,  
+    fontSize: 16,
     borderRadius: 8,
     marginBottom: 16,
-    color: "gray",      
+    color: "gray",
     fontFamily: 'Nunito-SemiBold',
-    
-  
+
+
   },
   asistenteContainer: {
     flexDirection: 'row',
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
   asistenteText: {
     fontSize: 16,
     marginLeft: 8,
-   
-    color: "gray",      
+
+    color: "gray",
     fontFamily: 'Nunito-SemiBold',
   },
   previewImage: {

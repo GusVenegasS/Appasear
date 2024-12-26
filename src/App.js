@@ -68,16 +68,16 @@ const App = () => {
             {props => <LoginScreen {...props} onLogin={handleLogin} />}
           </Stack.Screen>
           <Stack.Screen
-          name="ContrasenaScreen"
-          component={ContrasenaScreen}
-          options={{
-            title: 'Reestablecer contraseña',
-            headerStyle: { backgroundColor: Colores.color1 },
-            headerTitleAlign: 'center',
-            headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
-          }}
-        />
+            name="ContrasenaScreen"
+            component={ContrasenaScreen}
+            options={{
+              title: 'Reestablecer contraseña',
+              headerStyle: { backgroundColor: Colores.color1 },
+              headerTitleAlign: 'center',
+              headerTitleStyle: TextStyles.title1,
+              headerLeft: null,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -212,11 +212,13 @@ const App = () => {
           name="InfoEstudiante"
           component={Usuario}
           options={{
-            title: 'Información estudiante',
+            title: 'Info. Estudiante',
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -226,7 +228,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -237,7 +241,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -248,7 +254,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -258,7 +266,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -268,7 +278,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -277,7 +289,10 @@ const App = () => {
           options={{
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
-            headerTitleStyle: TextStyles.title1,            
+            headerTitleStyle: TextStyles.title1,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -287,7 +302,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -298,7 +315,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
         <Stack.Screen
@@ -309,7 +328,9 @@ const App = () => {
             headerStyle: { backgroundColor: Colores.color1 },
             headerTitleAlign: 'center',
             headerTitleStyle: TextStyles.title1,
-            headerLeft: null,
+            headerBackImage: () => (
+              <Icon name="arrow-back" size={24} color="white" />
+            ),
           }}
         />
       </Stack.Navigator>

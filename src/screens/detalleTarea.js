@@ -1,100 +1,166 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { obtenerTareaPorId } from '../servicesStudent/api-servicesStuden';
+import Icon from 'react-native-vector-icons/Ionicons';
 import TextStyles from '../styles/texto';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import Colores from '../styles/colores';
 
 const PeriodoAcademico = ({ route }) => {
-    const { tarea } = route.params; // Recibimos la tarea desde la navegación
+    const { tarea_id } = route.params;
+    console.log("tareaid", tarea_id)
+    const [tarea, setTarea] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    if (!tarea || tarea.length === 0) {
-        return <Text>No hay tarea disponible para mostrar</Text>; // Manejo de error si no hay tarea
+    useEffect(() => {
+        const fetchTarea = async () => {
+            try {
+                const data = await obtenerTareaPorId(tarea_id);
+                setTarea(data);
+                setError(null);
+            } catch (err) {
+                console.error("Error al obtener la tarea:", err);
+                setError("Error al obtener los detalles de la tarea.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTarea();
+    }, [tarea_id]);
+
+    if (loading) {
+        return <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 20 }} />;
     }
 
-    const tareaDetails = tarea[0]; // Asumiendo que tarea es un array y tomamos el primer elemento
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+            </View>
+        );
+    }
 
-    const { descripcion, estado, asistentes, evidencia_id, fechaRea, periodoAcademico } = tareaDetails;
-
-    // Formatear la fecha (si existe) a una cadena legible
-    const fechaRealizacion = fechaRea ? new Date(fechaRea).toLocaleDateString() : 'No disponible';
+    const evidenciaUri = tarea.evidencia && !tarea.evidencia.startsWith('data:image/')
+        ? `data:image/jpeg;base64,${tarea.evidencia}`
+        : tarea.evidencia;
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.card}>
-                {/* Título de la tarjeta con la descripción de la tarea */}
-                <Text style={[TextStyles.centeredText, TextStyles.title2]}>{descripcion}</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.form}>
+                <Text style={[TextStyles.centeredText, TextStyles.title2]}>{tarea.descripcion}</Text>
 
-                {/* Información adicional */}
-                <View style={styles.detailsContainer}>
-                    <Text style={TextStyles.title3}>Estado:</Text>
-                    <Text style={[TextStyles.cuerpo, TextStyles.marginBottom]}>{estado}</Text>
+                <Text style={styles.label}>Descripción</Text>
+                <Text style={styles.textValue}>{tarea.descripcion}</Text>
 
-                    <Text style={TextStyles.title3}>Fecha de realización:</Text>
-                    <Text style={[TextStyles.cuerpo, TextStyles.marginBottom]}>{fechaRealizacion}</Text>
+                <Text style={styles.label}>Estado:</Text>
+                <Text style={styles.textValue}>{tarea.estado}</Text>
 
-                    {/* Mostrar los asistentes, si los hay */}
-                    <Text style={TextStyles.title3}>Asistentes:</Text>
-                    {asistentes && asistentes.length > 0 ? (
-                        <View style={styles.assistantsList}>
-                            {asistentes.map((asistente, index) => (
-                                <Text key={index} style={[TextStyles.cuerpo, TextStyles.marginBottom]}>{asistente}</Text>
-                            ))}
+                <Text style={styles.label}>Observaciones</Text>
+                <Text style={styles.textValue}>{tarea.observacion || "Sin observaciones"}</Text>
+
+                <Text style={styles.label}>Asistentes</Text>
+                {tarea.asistentes && tarea.asistentes.length > 0 ? (
+                    tarea.asistentes.map((asistente, index) => (
+                        <View key={index} style={styles.asistenteContainer}>
+                            <Icon name="checkmark-circle" size={20} color={Colores.color1} />
+                            <Text style={styles.asistenteText}>{asistente.nombre}</Text>
                         </View>
-                    ) : (
-                        <Text style={[TextStyles.cuerpo, TextStyles.marginBottom]}>No hay asistentes</Text>
-                    )}
+                    ))
+                ) : (
+                    <Text style={styles.textValue}>No hay asistentes</Text>
+                )}
 
-                    {/* Mostrar la foto de la evidencia si existe */}
-                    <Text style={TextStyles.title3}>Evidencia:</Text>
-                    {evidencia_id ? (
-                        <View style={styles.evidenceContainer}>
-                            <Image source={{ uri: evidencia_id }} style={styles.evidenceImage} />
-                        </View>
-                    ) : (
-                        <Text style={[TextStyles.cuerpo, TextStyles.marginBottom]}>No hay evidencia disponible</Text>
-                    )}
-                </View>
+                <Text style={styles.label}>Evidencia</Text>
+                {evidenciaUri ? (
+                    <Image source={{ uri: evidenciaUri }} style={styles.previewImage} />
+                ) : (
+                    <Text style={styles.textValue}>No hay evidencia</Text>
+                )}
             </View>
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
+    scrollContainer: {
+        flexGrow: 1,
+        padding: 20,
+        backgroundColor: '#F8F8F8',
     },
-    card: {
-        backgroundColor: '#fff',
-        borderColor: '#008EB6',
-        borderWidth: 1,
-        borderRadius: 8,
-        padding: 16,
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 20,
     },
-    detailsContainer: {
-        marginTop: 8,
+    backIcon: {
+        marginRight: 10,
+
     },
-    detailTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#333',
-        marginTop: 8,
+    title: {
+
+        fontSize: 16,
+        color: Colores.primary,
+        fontFamily: 'Nunito-Semibold',
     },
-    detailText: {
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 8,
-    },
-    assistantsList: {
-        marginLeft: 16,
-    },
-    evidenceContainer: {
-        marginTop: 16,
-    },
-    evidenceImage: {
-        width: 200,
-        height: 200,
+    form: {
+        backgroundColor: "#ffffff",
         borderRadius: 8,
-        marginTop: 8,
+        padding: 16,
+        marginBottom: 16,
+        borderColor: "#008EB6",
+        borderWidth: 2,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    },
+    label: {
+        fontSize: 16,
+        fontFamily: 'Nunito-Bold',
+        marginBottom: 8,
+        color: '#333',
+
+    },
+    textValue: {
+        fontSize: 16,
+        borderRadius: 8,
+        marginBottom: 16,
+        color: "gray",
+        fontFamily: 'Nunito-SemiBold',
+
+
+    },
+    asistenteContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+
+    },
+    asistenteText: {
+        fontSize: 16,
+        marginLeft: 8,
+
+        color: "gray",
+        fontFamily: 'Nunito-SemiBold',
+    },
+    previewImage: {
+        width: '100%',
+        height: 200,
+        resizeMode: 'cover',
+        marginBottom: 16,
+        borderRadius: 8,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorText: {
+        fontSize: 18,
+        color: 'red',
+        textAlign: 'center',
     },
 });
 
