@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const BASE_URL = 'https://appbackauth.ashysea-2c880eb9.australiaeast.azurecontainerapps.io/api';
+const BASE_URL = 'http://157.100.18.146:20252/api/auth';
 
 const getAuthToken = async () => {
     const token = await AsyncStorage.getItem('authToken');

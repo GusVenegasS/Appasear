@@ -1,9 +1,9 @@
 // Obtener todas las brigadas de un periodo académico
 
 import authService from "../services/auth-service";
-import {getToken} from "../services/auth-service"
+import { getToken } from "../services/auth-service"
 
-const API_URL = 'https://appbackstudent.ashysea-2c880eb9.australiaeast.azurecontainerapps.io';
+const API_URL = 'http://157.100.18.146:20252/api/student';
 
 
 
@@ -108,11 +108,11 @@ export async function seleccionarBrigadas(usuario_id, brigada_ids, periodoAcadem
 
         const requestOptions = {
             method: "POST",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
-                
-             },
+
+            },
 
             body: JSON.stringify({
                 usuario_id,
@@ -188,7 +188,8 @@ export async function obtenerTareaPorId(tareaId) {
 
     const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" ,
+        headers: {
+            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
         cache: 'no-store'
@@ -212,9 +213,10 @@ export async function guardarTarea(tareaId, observacion, asistentes, evidencia) 
         const url = `${API_URL}/tareas/completar`;
         const requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json",
+            headers: {
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
-             },
+            },
             body: JSON.stringify({
                 tarea_id: tareaId,
                 observacion,
@@ -241,10 +243,10 @@ export async function obtenerEstudiantesPorBrigada(brigadaId, periodoAcademico) 
         let url = `${API_URL}/brigadas/estudiantes?brigada_id=${brigadaId}&periodoAcademico=${periodoAcademico}`;
         const requestOptions = {
             method: "GET",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-             },
+            },
         };
 
         const response = await fetch(url, requestOptions);
@@ -265,7 +267,7 @@ export async function obtenerBrigadasAsignadas(usuario_id, periodoAcademico) {
 
         const token = await authService.getToken();
 
-    
+
         const url = `${API_URL}/usuarios/${usuario_id}/brigadas/${periodoAcademico}`;
         console.log(url)
         const response = await fetch(url, {

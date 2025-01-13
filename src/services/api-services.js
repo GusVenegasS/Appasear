@@ -1,7 +1,7 @@
 import RNFS from 'react-native-fs';
 import AUTH from "../services/auth-service";
 
-const API_URL = 'https://appbackadmin.ashysea-2c880eb9.australiaeast.azurecontainerapps.io';
+const API_URL = 'http://157.100.18.146:20252/api/admin';
 
 const crearPeriodo = async (fechaInicio, fechaFin, periodo) => {
     let b = {
