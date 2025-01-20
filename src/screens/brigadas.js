@@ -101,7 +101,7 @@ const Brigadas = ({ navigation }) => {
         console.log("Datos enviados:", { day, brigadaId, periodo });
         try {
             const response = await API.verTarea(day.dateString, brigadaId, periodo);
-            console.log(response)
+            console.log(response.tarea_id)
             if (response.status === 404) {
                 Alert.alert(
                     "No existe tarea",

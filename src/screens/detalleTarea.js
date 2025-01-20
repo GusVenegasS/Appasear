@@ -6,40 +6,8 @@ import TextStyles from '../styles/texto';
 import Colores from '../styles/colores';
 
 const PeriodoAcademico = ({ route }) => {
-    const { tarea_id } = route.params;
-    console.log("tareaid", tarea_id)
-    const [tarea, setTarea] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchTarea = async () => {
-            try {
-                const data = await obtenerTareaPorId(tarea_id);
-                setTarea(data);
-                setError(null);
-            } catch (err) {
-                console.error("Error al obtener la tarea:", err);
-                setError("Error al obtener los detalles de la tarea.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTarea();
-    }, [tarea_id]);
-
-    if (loading) {
-        return <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 20 }} />;
-    }
-
-    if (error) {
-        return (
-            <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{error}</Text>
-            </View>
-        );
-    }
+    const tarea = route.params.tarea
+    console.log("tareaid", tarea.asistentes)
 
     const evidenciaUri = tarea.evidencia && !tarea.evidencia.startsWith('data:image/')
         ? `data:image/jpeg;base64,${tarea.evidencia}`
