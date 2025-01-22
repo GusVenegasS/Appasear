@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',  // Centra verticalmente
   },
   scrollContainer: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 15,
     paddingVertical: 20,
     flexGrow: 1,               // Asegura que el ScrollView pueda crecer si es necesario
     justifyContent: 'center',  // Cambia a 'center' para centrar el contenido verticalmente
@@ -55,6 +55,11 @@ const styles = StyleSheet.create({
     paddingRight: 40, // Para dejar espacio para el ícono
     height: 50,
     fontSize: 16,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: 'white',
+    fontFamily: 'Nunito-Bold',
   },
   loginButton: {
     backgroundColor: "#008EB6", // Color de fondo del botón

@@ -80,7 +80,7 @@ const CambiarContrasenaScreen = () => {
 
           {/* Botón para cambiar la contraseña */}
           <TouchableOpacity style={styles.loginButton} onPress={cambiarContrasena}>
-            <Text style={textStyles.title3}>Cambiar Contraseña</Text>
+            <Text style={styles.buttonText}>Cambiar Contraseña</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

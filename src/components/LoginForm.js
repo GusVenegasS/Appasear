@@ -15,6 +15,7 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
   const [periodos, setPeriodos] = useState([]);
   const [selectedPeriodo, setSelectedPeriodo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState({});
 
   // Usar el hook useNavigation para obtener el objeto navigation
   const navigation = useNavigation();
@@ -36,8 +37,27 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
   }, []);
 
   const handleLogin = async () => {
-    onLoginPress(email, password, selectedPeriodo);
+    const newErrors = {}; // Initialize empty errors object
+
+    if (!email) {
+      newErrors.email = 'El correo electrónico es obligatorio.';
+    }
+
+    if (!password) {
+      newErrors.password = 'La contraseña es obligatoria.';
+    }
+
+    if (!selectedPeriodo) {
+      newErrors.selectedPeriodo = 'Seleccione un período académico.';
+    }
+
+    setErrors(newErrors); // Update errors state
+
+    if (Object.keys(newErrors).length === 0) { // Only proceed if no errors
+      onLoginPress(email, password, selectedPeriodo);
+    }
   };
+
 
   const handleNavegar = () => {
     navegarPress();
@@ -121,7 +141,7 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
 
       {/* Botón de Inicio de Sesión */}
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={textStyles.title3}>Iniciar Sesión</Text>
+        <Text style={styles.buttonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
       {/* Opción de "¿Olvidaste tu contraseña?" */}
