@@ -18,7 +18,7 @@ const TextStyles = StyleSheet.create({
   },
   boton: {
     fontSize: 16,
-    color: '#000000', // Cambia el color según tus necesidades
+    color: '#ffffff', // Cambia el color según tus necesidades
     fontFamily: 'Nunito-Semibold',
   },
   cuerpo: {

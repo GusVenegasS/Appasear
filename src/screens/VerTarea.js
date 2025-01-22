@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Colores from '../styles/colores';
 import { useNavigation } from '@react-navigation/native';
 
+
 const VerTarea = ({ route }) => {
   const navigation = useNavigation(); // Hook para navegación
   const { tarea_id } = route.params; // Obtener el ID de la tarea de las rutas

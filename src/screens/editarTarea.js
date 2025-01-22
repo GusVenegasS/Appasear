@@ -6,12 +6,18 @@ import { launchCamera } from 'react-native-image-picker';
 import { guardarTarea } from '../servicesStudent/api-servicesStuden';
 import { useNavigation } from '@react-navigation/native';
 import TextStyles from "../styles/texto";
+import ErrorModal from "../components/ErrorAlert";
+import SuccessModal from "../components/SuccesModal";
 const EditarTarea = ({ route }) => {
   const { tarea } = route.params;
   const navigation = useNavigation();
   const [observaciones, setObservaciones] = useState('');
   const [evidencia, setEvidencia] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [error, setError] = useState('');
 
   // Utilizamos la lista de asistentes que ya está en la tarea
   const [asistentes, setAsistentes] = useState(
