@@ -19,6 +19,7 @@ const EditarTarea = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [error, setError] = useState('');
 
+
   // Utilizamos la lista de asistentes que ya está en la tarea
   const [asistentes, setAsistentes] = useState(
     tarea.listaAsistentes.map(asistente => ({
@@ -44,6 +45,7 @@ const showSuccessModal = (message) => {
 const closeSuccessModal = () => {
     setSuccessModalVisible(false);
     setSuccessMessage('');
+    navigation.goBack(); 
 };
 
   const toggleSeleccionAsistente = (id) => {
@@ -82,7 +84,7 @@ const closeSuccessModal = () => {
         evidencia ? evidencia.base64 : null
       );
       showSuccessModal("La tarea se completó correctamente.");
-      navigation.goBack(); // Regresar a HomeStudent
+      
     } catch (err) {
       console.error("Error al guardar la tarea:", err);
       showErrorModal("No se pudo completar la tarea. Intente nuevamente.");
@@ -146,7 +148,9 @@ const closeSuccessModal = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-     
+       {successModalVisible || modalVisible ? (
+        <View style={styles.overlay} />
+      ) : null}
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>
@@ -344,6 +348,15 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente
+    zIndex: 999, // Asegura que esté encima del contenido
   },
 });
 
