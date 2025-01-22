@@ -12,7 +12,7 @@ const TextStyles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
   },
   title3: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#000000', // Cambia el color según tus necesidades
     fontFamily: 'Nunito-SemiBold',
   },

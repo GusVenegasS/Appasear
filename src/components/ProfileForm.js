@@ -72,11 +72,11 @@ const ProfileForm = ({ navegarPress }) => {
 
       {/* Botón de guardar */}
       <TouchableOpacity style={styles.loginButton} onPress={guardarTelefono}>
-        <Text style={textStyles.title3}>Guardar</Text>
+        <Text style={styles.buttonText}>Guardar</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.loginButton} onPress={navegarPress}>
-        <Text style={textStyles.title3}>Cambiar Contraseña</Text>
+        <Text style={styles.buttonText}>Cambiar Contraseña</Text>
       </TouchableOpacity>
     </View>
   );

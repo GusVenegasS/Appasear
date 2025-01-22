@@ -76,6 +76,7 @@ const styles = {
     marginBottom: 10,
   },
   buttonText: {
+    fontSize: 16,
     color: 'white',
     fontWeight: 'bold',
   },

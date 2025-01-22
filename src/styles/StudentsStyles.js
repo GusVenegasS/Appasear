@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  buttonText: {
+    fontSize: 16,
+    color: 'white',
+    fontFamily: 'Nunito-Bold',
+  },
   studentList: {
     marginTop: 20,
   },

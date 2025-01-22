@@ -67,13 +67,13 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.addButton} onPress={handleExcelUpload}>
-        <Text style={textstyles.title3}>Mediante Excel</Text>
+        <Text style={styles.buttonText}>Mediante Excel</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('NuevoEstudianteScreen')}>
-        <Text style={textstyles.title3}>Manualmente</Text>
+        <Text style={styles.buttonText}>Manualmente</Text>
       </TouchableOpacity>
     </View>
   );

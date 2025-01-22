@@ -131,7 +131,8 @@ const styles = {
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
+    fontSize: 16,
   },
   label: {
     fontSize: 14,
