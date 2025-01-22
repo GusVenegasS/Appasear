@@ -17,10 +17,8 @@ const LoginScreen = ({ navigation, onLogin }) => {
 
       // Redirigir dependiendo del rol
       if (data.user.rol === 'admin') {
-        Alert.alert('Éxito', 'Inicio de sesión exitoso');
         navigation.navigate('Admin'); // Pantalla de Admin
       } else if (data.user.rol === 'user') {
-        Alert.alert('Éxito', 'Inicio de sesión exitoso');
         navigation.navigate('Student'); // Pantalla de Estudiante
       }
     } catch (error) {
