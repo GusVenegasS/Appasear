@@ -49,14 +49,7 @@ const VerTarea = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
-          <Text style={styles.title}>Atrás</Text>
-
-        </TouchableOpacity>
-
-      </View>
+ 
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>

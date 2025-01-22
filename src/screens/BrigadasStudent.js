@@ -169,10 +169,7 @@ const fetchBrigadas = async () => {
     // Renderizado si el usuario ya tiene brigadas asignadas
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#008EB6" />
-                <Text style={styles.loadingText}>Cargando brigadas...</Text>
-            </View>
+            <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 30}} />
         );
     }
 
@@ -191,7 +188,7 @@ const fetchBrigadas = async () => {
             >
                 <Text style={styles.assignedTitle}>Usted pertenece a las siguientes brigadas:</Text>
                 {brigadasAsignadas.map((brigada, index) => (
-                    <View key={index} style={[styles.card, { width: width * 0.9 }]}>
+                    <View key={index} style={[styles.card]}>
                         <Text style={[TextStyles.tituloCard]}>Nombre: {brigada.nombre}</Text>
                         <Text style={styles.assignedText}>Actividad: {brigada.actividad}</Text>
                         <Text style={styles.assignedText}>Día: {brigada.diaSemana}</Text>
@@ -387,6 +384,12 @@ const styles = StyleSheet.create({
         color: "#ffffff",
         fontWeight: "bold",
         fontSize: 16,
+    },
+    assignedText:{
+        fontSize: 16,
+        color: "gray",
+        fontFamily: 'Nunito-SemiBold',
+
     },
 });
 

@@ -20,6 +20,25 @@ const EditarTarea = ({ route }) => {
       seleccionado: false, // Añadir el estado de selección
     }))
   );
+  const showErrorModal = (message) => {
+    setError(message);
+    setModalVisible(true);
+};
+
+const closeModal = () => {
+    setModalVisible(false);
+    setError(null);
+};
+
+const showSuccessModal = (message) => {
+    setSuccessMessage(message);
+    setSuccessModalVisible(true);
+};
+
+const closeSuccessModal = () => {
+    setSuccessModalVisible(false);
+    setSuccessMessage('');
+};
 
   const toggleSeleccionAsistente = (id) => {
     setAsistentes(asistentes.map(asistente => 
@@ -33,17 +52,17 @@ const EditarTarea = ({ route }) => {
       .map(asistente => asistente.usuario_id);
 
     if (!observaciones.trim()) {
-      Alert.alert("Error", "La observación es obligatoria.");
+      showErrorModal("La observación es obligatoria.");
       return;
     }
     if (idsAsistentesSeleccionados.length === 0) {
-      Alert.alert("Error", "Debes seleccionar al menos un asistente.");
+      showErrorModal("Debes seleccionar al menos un asistente.");
       return;
     }
 
     // Validar que la evidencia esté presente
     if (!evidencia || !evidencia.base64) {
-      Alert.alert("Error", "Es obligatorio subir una evidencia.");
+      showErrorModal("Es obligatorio subir una evidencia.");
       return;
     }
 
@@ -56,11 +75,11 @@ const EditarTarea = ({ route }) => {
         idsAsistentesSeleccionados,
         evidencia ? evidencia.base64 : null
       );
-      Alert.alert("Éxito", "La tarea se completó correctamente.");
+      showSuccessModal("La tarea se completó correctamente.");
       navigation.goBack(); // Regresar a HomeStudent
     } catch (err) {
       console.error("Error al guardar la tarea:", err);
-      Alert.alert("Error", "No se pudo completar la tarea. Intente nuevamente.");
+      showErrorModal("No se pudo completar la tarea. Intente nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -121,18 +140,12 @@ const EditarTarea = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
-          <Text>Atrás</Text>
-        </TouchableOpacity>
-       
-      </View>
+     
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>
         <TextInput
-          style={styles.input}
+          style={styles.noEditable}
           value={tarea.descripcion}
           editable={false}
         />
@@ -142,7 +155,7 @@ const EditarTarea = ({ route }) => {
           style={[styles.input, styles.textArea]}
           value={observaciones}
           onChangeText={setObservaciones}
-          placeholder="Escribe observaciones..."
+          placeholder="Ingresa las observaciones..."
           multiline
         />
 
@@ -190,6 +203,17 @@ const EditarTarea = ({ route }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <SuccessModal
+      visible={successModalVisible}
+      message={successMessage}
+      onClose={closeSuccessModal}
+    />
+
+    <ErrorModal
+      visible={modalVisible}
+      message={error}
+      onClose={closeModal}
+    />
     </ScrollView>
   );
 };
@@ -251,6 +275,17 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
+    borderWidth: 1,
+    borderColor: '#000000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 16,
+    fontFamily: 'Nunito-SemiBold',
+   
+    marginBottom: 16,
+  },
+  noEditable: {
     borderWidth: 1,
     borderColor: '#000000',
     borderRadius: 8,
