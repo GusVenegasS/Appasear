@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PermissionsAndroid, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, ScrollView, Image, Alert, PermissionsAndroid, Platform, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colores from '../styles/colores';
 import { launchCamera } from 'react-native-image-picker';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import TextStyles from "../styles/texto";
 import ErrorModal from "../components/ErrorAlert";
 import SuccessModal from "../components/SuccesModal";
+import LottieView from 'lottie-react-native';
 const EditarTarea = ({ route }) => {
   const { tarea } = route.params;
   const navigation = useNavigation();
@@ -18,7 +19,7 @@ const EditarTarea = ({ route }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [error, setError] = useState('');
-
+   const [modalAnimation, setModalAnimation] = useState(null); 
 
   // Utilizamos la lista de asistentes que ya está en la tarea
   const [asistentes, setAsistentes] = useState(
@@ -29,7 +30,8 @@ const EditarTarea = ({ route }) => {
   );
   const showErrorModal = (message) => {
     setError(message);
-    setModalVisible(true);
+        setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+        setModalVisible(true);
 };
 
 const closeModal = () => {
@@ -38,8 +40,9 @@ const closeModal = () => {
 };
 
 const showSuccessModal = (message) => {
-    setSuccessMessage(message);
-    setSuccessModalVisible(true);
+  setSuccessMessage(message);
+  setModalAnimation(require('../assets/animaciones/check.json')); // Animación para éxito
+  setSuccessModalVisible(true);
 };
 
 const closeSuccessModal = () => {
@@ -155,7 +158,7 @@ const closeSuccessModal = () => {
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>
         <TextInput
-          style={styles.noEditable}
+          style={[styles.noEditable, { color: 'gray' }]} 
           value={tarea.descripcion}
           editable={false}
         />
@@ -166,6 +169,7 @@ const closeSuccessModal = () => {
           value={observaciones}
           onChangeText={setObservaciones}
           placeholder="Ingresa las observaciones..."
+          placeholderTextColor="gray"
           multiline
         />
 
@@ -191,7 +195,8 @@ const closeSuccessModal = () => {
           <TextInput
             style={styles.evidenciaInput}
             value={evidencia ? 'Imagen capturada' : ''}
-            placeholder="Selecciona un archivo..."
+            placeholder="Captura la evidencia"
+            placeholderTextColor="gray"
             editable={false}
           />
           <TouchableOpacity onPress={solicitarPermisoCamara}>
@@ -212,18 +217,54 @@ const closeSuccessModal = () => {
             <Text style={TextStyles.boton}>Cancelar</Text>
           </TouchableOpacity>
         </View>
-      </View>
-      <SuccessModal
-      visible={successModalVisible}
-      message={successMessage}
-      onClose={closeSuccessModal}
-    />
+         {/* Modal de Éxito */}
+         <Modal
+                animationType="slide"
+                transparent={true}
+                visible={successModalVisible}
+                onRequestClose={closeSuccessModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={false}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{successMessage}</Text>
+                        <TouchableOpacity onPress={closeSuccessModal} style={styles.closeButton}>
+                            <Icon name="close" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
 
-    <ErrorModal
-      visible={modalVisible}
-      message={error}
-      onClose={closeModal}
-    />
+            {/* Modal de Error */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={false}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{error}</Text>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Icon name="close" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+      </View>
+      
+    
     </ScrollView>
   );
 };
@@ -236,11 +277,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+},
+modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    maxWidth: 300, // Limitar el tamaño del modal
+    paddingBottom: 20,
+},
+lottie: {
+    width: 150,
+    height: 150,
+    marginBottom: 20, // Aseguramos que haya espacio entre la animación y el texto
+},
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
   },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 16,
+},
   cancelarButton: {
     backgroundColor: 'gray',
     paddingVertical: 12,
@@ -292,6 +362,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 16,
     fontFamily: 'Nunito-SemiBold',
+
+    color: "black",
    
     marginBottom: 16,
   },
