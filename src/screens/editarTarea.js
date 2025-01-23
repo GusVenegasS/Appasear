@@ -177,7 +177,7 @@ const closeSuccessModal = () => {
         {asistentes.map((asistente) => (
           <TouchableOpacity
             key={asistente.usuario_id}
-            style={[styles.checkboxLabel, { color: 'gray' }]}
+            style={styles.checkboxContainer}
             onPress={() => toggleSeleccionAsistente(asistente.usuario_id)}
           >
             <Icon
@@ -200,7 +200,7 @@ const closeSuccessModal = () => {
             editable={false}
           />
           <TouchableOpacity onPress={solicitarPermisoCamara}>
-            <Icon name="camera-outline" size={24} colo="gray" />
+            <Icon name="camera-outline" size={24} color={Colores.primary} />
           </TouchableOpacity>
         </View>
 
@@ -392,6 +392,7 @@ lottie: {
     fontSize: 16,
     marginLeft: 8,
     fontFamily: 'Nunito-SemiBold',
+    color:"gray",
   },
   evidenciaContainer: {
     flexDirection: 'row',
