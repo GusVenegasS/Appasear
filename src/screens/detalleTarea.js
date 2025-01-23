@@ -7,7 +7,7 @@ import Colores from '../styles/colores';
 
 const PeriodoAcademico = ({ route }) => {
     const tarea = route.params.tarea
-    console.log("tareaid", tarea.asistentes)
+   
 
     const evidenciaUri = tarea.evidencia && !tarea.evidencia.startsWith('data:image/')
         ? `data:image/jpeg;base64,${tarea.evidencia}`
