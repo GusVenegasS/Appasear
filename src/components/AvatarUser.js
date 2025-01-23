@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Modal, Text } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNBlobUtil from 'react-native-blob-util';
 import ImageResizer from 'react-native-image-resizer';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Importa Ionicons
+import LottieView from 'lottie-react-native';
+import TextStyles from '../styles/texto';
+import Icon from 'react-native-vector-icons/Feather';
 import { fetchImagenPerfil, uploadImagenPerfil } from '../services/api-auth-service';
 
 const AvatarUser = () => {
   const [imagenPerfil, setImagenPerfil] = useState(null); // Estado para la imagen
+  const [modalVisible, setModalVisible] = useState(false); // Estado para mostrar el modal
+  const [modalAnimation, setModalAnimation] = useState(null);
+  const [mensaje, setMensaje] = useState('');
+  const [isError, setIsError] = useState(false);
 
   // Cargar la foto de perfil al montar el componente
   useEffect(() => {
@@ -45,13 +52,23 @@ const AvatarUser = () => {
         const fileContent = await RNBlobUtil.fs.readFile(resizedImage.uri, 'base64');
         const success = await uploadImagenPerfil(fileContent); // Subir la imagen comprimida
         if (success) {
-          Alert.alert('Éxito', 'Foto de perfil actualizada.');
+          setModalAnimation(require('../assets/animaciones/check.json'));
+          setIsError(false);
+          setMensaje('Foto de perfil actualizada.');
+          setModalVisible(true);
           setImagenPerfil(fileContent); // Actualizar la imagen en el estado
+          setTimeout(() => {
+            setRefresh(!refresh);
+            setModalVisible(false);
+        }, 3000); 
         }
       }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        Alert.alert('Operación cancelada', 'No se seleccionó ningún archivo.');
+        setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+        setMensaje('No se seleccionó ningún archivo.');
+        setIsError(true);
+        setModalVisible(true);
       } else {
         console.error('Error al seleccionar la imagen:', err);
       }
@@ -78,6 +95,36 @@ const AvatarUser = () => {
           <Ionicons name="camera" size={24} color="#fff" />
         </View>
       </TouchableOpacity>
+
+      {/* Modal para mostrar el mensaje */}
+      <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={!isError}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+                        {isError && (
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Icon name="x" size={30} color="black" />
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+            </Modal>
     </View>
   );
 };
@@ -104,6 +151,41 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 5,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 5,
+  },
+  lottie: {
+    width: 150,
+    height: 150,
+},
 });
 
 export default AvatarUser;

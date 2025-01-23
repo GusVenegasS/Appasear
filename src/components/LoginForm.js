@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, TextInput, Alert } from 'react-native';
+import { View, TouchableOpacity, Text, TextInput, Modal, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -16,6 +16,8 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
   const [selectedPeriodo, setSelectedPeriodo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   // Usar el hook useNavigation para obtener el objeto navigation
   const navigation = useNavigation();
@@ -27,7 +29,8 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
         setPeriodos(data);
         console.log('Periodos obtenidos:', data);
       } catch (error) {
-        Alert.alert('Error', error.message || 'Error al cargar los períodos académicos');
+        setModalMessage(error.message || 'Error al cargar los períodos académicos');
+        setModalVisible(true);
       } finally {
         setIsLoading(false); // Se actualiza el estado de carga
       }
@@ -139,6 +142,11 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
         )}
       </View>
 
+      {/* Mostrar errores si hay */}
+      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+      {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+      {errors.selectedPeriodo && <Text style={styles.errorText}>{errors.selectedPeriodo}</Text>}
+
       {/* Botón de Inicio de Sesión */}
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.buttonText}>Iniciar Sesión</Text>
@@ -148,6 +156,26 @@ const LoginForm = ({ onLoginPress, navegarPress}) => {
       <TouchableOpacity onPress={handleNavegar}>
         <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
+
+      {/* Modal para mostrar errores o mensajes */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalMessage}>{modalMessage}</Text>
+            <TouchableOpacity
+              style={styles.closeModalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.closeModalButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import {addStudent} from '../services/api-auth-service'; // Importamos el servicio
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { addStudent } from '../services/api-auth-service'; // Importamos el servicio
+import Icon from 'react-native-vector-icons/Feather';
 import textStyles from '../styles/texto';
+import LottieView from 'lottie-react-native';
 
 const NuevoEstudianteScreen = ({ navigation }) => {
   const [usuarioId, setUsuarioId] = useState('');
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalAnimation, setModalAnimation] = useState(null);
+  const [mensaje, setMensaje] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const generateRandomPassword = (length = 12) => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
@@ -20,7 +26,10 @@ const NuevoEstudianteScreen = ({ navigation }) => {
 
   const handleAddStudent = async () => {
     if (!nombre || !correo || !telefono) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
+      setMensaje('Por favor completa todos los campos');
+      setIsError(true);
+      setModalAnimation(require('../assets/animaciones/error_500.json'));
+      setModalVisible(true);
       return;
     }
 
@@ -28,10 +37,19 @@ const NuevoEstudianteScreen = ({ navigation }) => {
       // Llamamos al servicio para agregar al estudiante
       await addStudent(usuarioId, nombre, correo, telefono, generateRandomPassword());
 
-      Alert.alert('Éxito', 'Estudiante agregado correctamente');
-      navigation.goBack();
+      setMensaje('Estudiante agregado correctamente');
+      setIsError(false);
+      setModalAnimation(require('../assets/animaciones/check.json'));
+      setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+        navigation.goBack();
+      }, 3000);
     } catch (error) {
-      Alert.alert('Error', error.message || 'Ocurrió un problema al agregar el estudiante');
+      setMensaje(error.message || 'Ocurrió un problema al agregar el estudiante');
+      setIsError(true);
+      setModalAnimation(require('../assets/animaciones/error_500.json'));
+      setModalVisible(true);
     }
   };
 
@@ -57,7 +75,7 @@ const NuevoEstudianteScreen = ({ navigation }) => {
               onChangeText={setUsuarioId}
               keyboardType="numeric"
               placeholder="Ingresa el código único"
-              maxLength={9} 
+              maxLength={9}
             />
           </View>
 
@@ -89,6 +107,35 @@ const NuevoEstudianteScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <LottieView
+              source={modalAnimation}
+              autoPlay
+              loop={!isError}
+              style={styles.lottie}
+            />
+            <Text style={[textStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+            {isError && (
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Icon name="x" size={30} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -113,15 +160,6 @@ const styles = {
     borderRadius: 10,
     backgroundColor: 'white',
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingLeft: 10,
-    paddingRight: 40,
-    height: 50,
-    fontSize: 16,
-  },
   button: {
     backgroundColor: "#008EB6",
     borderRadius: 10,
@@ -133,11 +171,6 @@ const styles = {
     color: 'white',
     fontFamily: 'Nunito-Bold',
     fontSize: 16,
-  },
-  label: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
   },
   formContainer: {
     backgroundColor: 'white',
@@ -152,6 +185,43 @@ const styles = {
     shadowRadius: 3,
     elevation: 3,
   },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: 100,
+    height: 100,
+  },
+  modalText: {
+    fontSize: 16,
+    color: 'black',
+    marginTop: 15,
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#007BFF',
+    borderRadius: 5,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 5,
+},
 };
 
 export default NuevoEstudianteScreen;

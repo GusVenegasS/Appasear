@@ -1,38 +1,49 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, ScrollView } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, ScrollView, Modal, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../styles/LoginScreenStyles';
 import textStyles from '../styles/texto';
 import { changePassword } from '../services/api-auth-service';
+import LottieView from 'lottie-react-native';
 
 const CambiarContrasenaScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
+  
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalAnimation, setModalAnimation] = useState(null);
+  const [mensaje, setMensaje] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const cambiarContrasena = async () => {
     if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'Las contraseñas no coinciden.');
+      setMensaje('Las contraseñas no coinciden.');
+      setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+      setIsError(true);
+      setModalVisible(true);
       return;
     }
 
     try {
       await changePassword(newPassword);
-      Alert.alert('Éxito', 'Contraseña cambiada correctamente.');
+      setMensaje('Contraseña cambiada correctamente.');
+      setModalAnimation(require('../assets/animaciones/check.json'));
+      setIsError(false);
+      setModalVisible(true);
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', error.message || 'Ocurrió un problema al cambiar la contraseña.');
+      setMensaje(error.message || 'Ocurrió un problema al cambiar la contraseña.');
+      setModalAnimation(require('../assets/animaciones/error_500.json'));
+      setIsError(true);
+      setModalVisible(true);
     }
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <View style={styles.formContainer}>
           {/* Campo para nueva contraseña */}
           <Text style={textStyles.title3}>Nueva Contraseña:</Text>
@@ -45,7 +56,7 @@ const CambiarContrasenaScreen = () => {
               style={[textStyles.cuerpo, { flex: 1, paddingRight: 50 }]}
             />
             <TouchableOpacity
-              style={styles.iconContainer} // Contenedor para el icono
+              style={styles.iconContainer}
               onPress={() => setShowPassword(!showPassword)}
             >
               <Ionicons
@@ -66,8 +77,8 @@ const CambiarContrasenaScreen = () => {
               secureTextEntry={!showPassword1}
               style={[textStyles.cuerpo, { flex: 1, paddingRight: 50 }]}
             />
-                        <TouchableOpacity
-              style={styles.iconContainer} // Contenedor para el icono
+            <TouchableOpacity
+              style={styles.iconContainer}
               onPress={() => setShowPassword1(!showPassword1)}
             >
               <Ionicons
@@ -84,6 +95,34 @@ const CambiarContrasenaScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Modal de feedback */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <LottieView
+              source={modalAnimation}
+              autoPlay
+              loop={!isError}
+              style={styles.lottie}
+            />
+            <Text style={[textStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+            {isError && (
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Ionicons name="close-circle" size={30} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

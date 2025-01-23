@@ -1,13 +1,20 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNBlobUtil from 'react-native-blob-util';
 import * as XLSX from 'xlsx';
 import styles from '../styles/StudentsStyles';
+import Icon from 'react-native-vector-icons/Feather';
 import textstyles from '../styles/texto';
-import {uploadStudentsData} from '../services/api-auth-service';
+import { uploadStudentsData } from '../services/api-auth-service';
+import LottieView from 'lottie-react-native';
 
 const AnadirEstudiantesScreen = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalAnimation, setModalAnimation] = useState(null);
+  const [mensaje, setMensaje] = useState('');
+  const [isError, setIsError] = useState(false);
+
   const generateRandomPassword = (length = 12) => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
     let password = '';
@@ -27,7 +34,10 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
         const fileUri = res[0].uri;
 
         if (!fileUri) {
-          Alert.alert('Error', 'No se pudo obtener la URI del archivo.');
+          setMensaje('No se pudo obtener la URI del archivo.');
+          setIsError(true);
+          setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+          setModalVisible(true);
           return;
         }
 
@@ -50,17 +60,25 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
 
         await uploadStudentsData(studentsData);
 
-        Alert.alert('Éxito', 'Los estudiantes fueron agregados correctamente.');
+        setMensaje('Los estudiantes fueron agregados correctamente.');
+        setIsError(false);
+        setModalAnimation(require('../assets/animaciones/check.json'));
+        setModalVisible(true);
       } else {
-        Alert.alert('Error', 'No se seleccionó ningún archivo.');
+        setMensaje('No se seleccionó ningún archivo.');
+        setIsError(true);
+        setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+        setModalVisible(true);
       }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        Alert.alert('Operación cancelada', 'No se seleccionó ningún archivo.');
+        setMensaje('Operación cancelada. No se seleccionó ningún archivo.');
       } else {
-        console.error('Error al cargar el archivo:', err);
-        Alert.alert('Error', 'No se pudo cargar el archivo');
+        setMensaje('No se pudo cargar el archivo');
       }
+      setIsError(true);
+      setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+      setModalVisible(true);
     }
   };
 
@@ -75,6 +93,33 @@ const AnadirEstudiantesScreen = ({ navigation }) => {
         onPress={() => navigation.navigate('NuevoEstudianteScreen')}>
         <Text style={styles.buttonText}>Manualmente</Text>
       </TouchableOpacity>
+
+      {/* Modal para mostrar el mensaje de éxito o error */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <LottieView
+              source={modalAnimation}
+              autoPlay
+              loop={!isError}
+              style={styles.lottie}
+            />
+            <Text style={[textstyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+            {isError && (
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Icon name="x" size={30} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
