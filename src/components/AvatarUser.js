@@ -3,6 +3,7 @@ import { View, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNBlobUtil from 'react-native-blob-util';
 import ImageResizer from 'react-native-image-resizer';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Importa Ionicons
 import { fetchImagenPerfil, uploadImagenPerfil } from '../services/api-auth-service';
 
 const AvatarUser = () => {
@@ -59,7 +60,7 @@ const AvatarUser = () => {
 
   return (
     <View style={styles.avatarContainer}>
-      <TouchableOpacity onPress={pickImage}>
+      <TouchableOpacity onPress={pickImage} style={styles.avatarWrapper}>
         <Image
           style={styles.avatar}
           source={
@@ -72,6 +73,10 @@ const AvatarUser = () => {
               : require('../assets/images/avatar_placeholder.png') // Imagen predeterminada.
           }
         />
+        {/* Ícono de cámara en la esquina inferior derecha */}
+        <View style={styles.cameraIconContainer}>
+          <Ionicons name="camera" size={24} color="#fff" />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -82,11 +87,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  avatarWrapper: {
+    position: 'relative',
+  },
   avatar: {
     width: 150,
     height: 150,
     borderRadius: 100,
     backgroundColor: '#d3d3d3',
+  },
+  cameraIconContainer: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    backgroundColor: '#008EB6',
+    borderRadius: 12,
+    padding: 5,
   },
 });
 

@@ -71,7 +71,7 @@ const CambiarContrasenaScreen = () => {
               onPress={() => setShowPassword1(!showPassword1)}
             >
               <Ionicons
-                name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                name={showPassword1 ? 'eye-outline' : 'eye-off-outline'}
                 size={24}
                 color="gray"
               />
