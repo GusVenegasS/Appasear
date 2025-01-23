@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import LottieView from 'lottie-react-native';
 import {
     View,
     Text,
@@ -29,7 +30,7 @@ const HomeStudent = () => {
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-
+    const [screenWidth, setScreenWidth] = useState(width);
 
 
     // Función para obtener tareas desde el servidor
@@ -66,6 +67,7 @@ const HomeStudent = () => {
             setRefreshing(false);
         }
     };
+   
 
     // Actualizar datos al hacer "pull-to-refresh"
     const onRefresh = useCallback(() => {
@@ -119,7 +121,7 @@ const HomeStudent = () => {
     };
 
     const renderTarea = ({ item }) => (
-        <View style={[styles.card, { width: width * 0.9 }]}>
+        <View style={[styles.card]}>
             <View style={styles.header}>
                 <Text style={[TextStyles.tituloCard]}>{item.brigada_id || "Sin título"}</Text>
             </View>
@@ -146,22 +148,24 @@ const HomeStudent = () => {
                     {item.estado}
                 </Text>
                 <View style={styles.iconsContainer}>
-                    {/* Botón "Ver" */}
+                      {/* Botón "Ver" */}
+                {item.estado === "completada" && (
                     <TouchableOpacity
                         onPress={() => handleView(item)}
-                        disabled={item.estado !== "completada"}
-                        style={[styles.iconButton, item.estado !== "completada" && styles.disabledButton]}
+                        style={styles.iconButton}
                     >
-                        <Icon name="eye" size={25} color={item.estado === "completada" ? Colores.colorIcon : "gray"} />
+                        <Icon name="eye" size={25} color={Colores.colorIcon} />
                     </TouchableOpacity>
-                    {/* Botón "Editar" */}
+                )}
+                {/* Botón "Editar" */}
+                {item.estado === "por completar" && (
                     <TouchableOpacity
                         onPress={() => handleEdit(item)}
-                        disabled={item.estado !== "por completar"}
-                        style={[styles.iconButton, item.estado !== "por completar" && styles.disabledButton]}
+                        style={styles.iconButton}
                     >
-                        <Icon name="create" size={25} color={item.estado === "por completar" ? Colores.colorIcon : "gray"} />
+                        <Icon name="create" size={25} color={Colores.colorIcon} />
                     </TouchableOpacity>
+                )}
                 </View>
             </View>
         </View>
@@ -304,18 +308,19 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     date: {
-        fontSize: 14,
+        fontSize: 15,
         color: "gray",
         fontFamily: 'Nunito-SemiBold',
     },
     stateIconsContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-between", // Alinea el estado a la izquierda
         alignItems: "center",
+        width: "100%",
     },
     iconsContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         width: 80,
     },
     messageContainer: {
@@ -327,6 +332,12 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "red",
     },
+    animationContainer: {
+    flex: 1,
+    justifyContent: 'center', // Centramos la animación de carga
+    alignItems: 'center',
+    marginTop: 20, // Margen superior para evitar que se pegue al borde
+  },
 });
 
 export default HomeStudent;

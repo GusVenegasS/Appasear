@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Colores from '../styles/colores';
 import { useNavigation } from '@react-navigation/native';
 
+
 const VerTarea = ({ route }) => {
   const navigation = useNavigation(); // Hook para navegación
   const { tarea_id } = route.params; // Obtener el ID de la tarea de las rutas
@@ -49,14 +50,7 @@ const VerTarea = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
-          <Text style={styles.title}>Atrás</Text>
-
-        </TouchableOpacity>
-
-      </View>
+ 
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>

@@ -98,7 +98,7 @@ const Brigadas = ({ navigation }) => {
     };
 
     const handleDaySelect = async ({ day, brigadaId, periodo }) => {
-        console.log("Datos enviados:", { day, brigadaId, periodo });
+      
         try {
             const response = await API.verTarea(day.dateString, brigadaId, periodo);
             console.log(response.tarea_id)

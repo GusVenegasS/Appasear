@@ -131,6 +131,7 @@ export default function VerificarPeriodo() {
 
     const descargar = async () => {
         try {
+            const { periodo } = await AUTH.getUserDetails();
             const path = await API.descargarReporte(periodo);
             console.log(path)// Usar la función que descargará el archivo
             Alert.alert('Descarga completa', `El archivo se ha descargado en: ${path}`);

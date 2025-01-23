@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     ScrollView,
+    Modal,
     ActivityIndicator,
     RefreshControl,
     Dimensions,
@@ -17,6 +18,7 @@ import ErrorModal from "../components/ErrorAlert";
 import SuccessModal from "../components/SuccesModal";
 import TextStyles from "../styles/texto";
 import authService from "../services/auth-service";
+import LottieView from 'lottie-react-native';
 
 const { width } = Dimensions.get("window"); // Obtener el ancho de la pantalla
 
@@ -31,12 +33,14 @@ const BrigadasStudent = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+    const [modalAnimation, setModalAnimation] = useState(null); 
 
     const daysOfWeek = ["lunes", "martes", "miércoles", "jueves", "viernes"];
 
     // Función para mostrar el modal de error
     const showErrorModal = (message) => {
         setError(message);
+        setModalAnimation(require('../assets/animaciones/errorPerro.json'));
         setModalVisible(true);
     };
 
@@ -50,7 +54,8 @@ const BrigadasStudent = () => {
     // Función para mostrar el modal de éxito
     const showSuccessModal = (message) => {
         setSuccessMessage(message);
-        setSuccessModalVisible(true);
+    setModalAnimation(require('../assets/animaciones/check.json')); // Animación para éxito
+    setSuccessModalVisible(true);
     };
 
     // Función para cerrar el modal de éxito
@@ -169,10 +174,7 @@ const fetchBrigadas = async () => {
     // Renderizado si el usuario ya tiene brigadas asignadas
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#008EB6" />
-                <Text style={styles.loadingText}>Cargando brigadas...</Text>
-            </View>
+            <ActivityIndicator size="large" color={Colores.primary} style={{ marginTop: 30}} />
         );
     }
 
@@ -191,7 +193,7 @@ const fetchBrigadas = async () => {
             >
                 <Text style={styles.assignedTitle}>Usted pertenece a las siguientes brigadas:</Text>
                 {brigadasAsignadas.map((brigada, index) => (
-                    <View key={index} style={[styles.card, { width: width * 0.9 }]}>
+                    <View key={index} style={[styles.card]}>
                         <Text style={[TextStyles.tituloCard]}>Nombre: {brigada.nombre}</Text>
                         <Text style={styles.assignedText}>Actividad: {brigada.actividad}</Text>
                         <Text style={styles.assignedText}>Día: {brigada.diaSemana}</Text>
@@ -223,48 +225,58 @@ const fetchBrigadas = async () => {
                     />
                 }
             >
-                {daysOfWeek.map((day) => (
-                    <View key={day} style={styles.card}>
-                       <TouchableOpacity
-        style={styles.cardHeader}
-        onPress={() => toggleExpand(day)} // Hacer clic en cualquier parte de la cabecera
-    >
-        <Text style={TextStyles.title3}>
-            {`Brigadas ${day.charAt(0).toUpperCase() + day.slice(1)}`}
-        </Text>
-        <Icon
-            name={expandedDays[day] ? "chevron-up" : "chevron-down"}
-            size={24}
-            color="#008EB6"
-        />
-    </TouchableOpacity>
+             {daysOfWeek.map((day) => {
+    // Filtramos las brigadas por día
+    const brigadasPorDia = filterBrigadasByDay(day);
 
-                        {expandedDays[day] && (
-                            <View style={styles.expandedCard}>
-                                {filterBrigadasByDay(day).map((brigada) => (
-                                    <View key={brigada.brigada_id} style={styles.brigadaItemContainer}>
-                                        <View style={styles.brigadaInfo}>
-                                            <Text style={styles.brigadaItem}>
-                                                {brigada.nombre}
-                                            </Text>
-                                            <TouchableOpacity
-                                                onPress={() => toggleCheckbox(brigada.brigada_id)}
-                                                style={[
-                                                    styles.customCheckbox,
-                                                    selectedActivities[brigada.brigada_id] && styles.checkedBox
-                                                ]}
-                                            >
-                                                {selectedActivities[brigada.brigada_id] && (
-                                                    <Icon name="checkmark" size={18} color="#fff" />
-                                                )}
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                ))}
+    // Si no hay brigadas disponibles para este día, no renderizamos nada
+    if (brigadasPorDia.length === 0) {
+        return null;
+    }
+
+    return (
+        <View key={day} style={styles.card}>
+            <TouchableOpacity
+                style={styles.cardHeader}
+                onPress={() => toggleExpand(day)}
+            >
+                <Text style={TextStyles.title3}>
+                    {`Brigadas ${day.charAt(0).toUpperCase() + day.slice(1)}`}
+                </Text>
+                <Icon
+                    name={expandedDays[day] ? "chevron-up" : "chevron-down"}
+                    size={24}
+                    color="#008EB6"
+                />
+            </TouchableOpacity>
+
+            {expandedDays[day] && (
+                <View style={styles.expandedCard}>
+                    {brigadasPorDia.map((brigada) => (
+                        <View key={brigada.brigada_id} style={styles.brigadaItemContainer}>
+                            <View style={styles.brigadaInfo}>
+                                <Text style={styles.brigadaItem}>
+                                    {brigada.nombre}
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={() => toggleCheckbox(brigada.brigada_id)}
+                                    style={[
+                                        styles.customCheckbox,
+                                        selectedActivities[brigada.brigada_id] && styles.checkedBox
+                                    ]}
+                                >
+                                    {selectedActivities[brigada.brigada_id] && (
+                                        <Icon name="checkmark" size={18} color="#fff" />
+                                    )}
+                                </TouchableOpacity>
                             </View>
-                        )}
-                    </View>
-                ))}
+                        </View>
+                    ))}
+                </View>
+            )}
+        </View>
+    );
+})}
             </ScrollView>
             <View style={styles.fixedButtonContainer}>
                 <TouchableOpacity style={styles.saveButton} onPress={guardarSeleccion}>
@@ -273,18 +285,50 @@ const fetchBrigadas = async () => {
             </View>
 
             {/* Modal de Éxito */}
-            <SuccessModal
+            <Modal
+                animationType="slide"
+                transparent={true}
                 visible={successModalVisible}
-                message={successMessage}
-                onClose={closeSuccessModal}
-            />
+                onRequestClose={closeSuccessModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={false}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{successMessage}</Text>
+                        <TouchableOpacity onPress={closeSuccessModal} style={styles.closeButton}>
+                            <Icon name="close" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
 
             {/* Modal de Error */}
-            <ErrorModal
+            <Modal
+                animationType="slide"
+                transparent={true}
                 visible={modalVisible}
-                message={error}
-                onClose={closeModal}
-            />
+                onRequestClose={closeModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={false}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{error}</Text>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Icon name="close" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -295,6 +339,39 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         padding: 16,
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        maxWidth: 300, // Limitar el tamaño del modal
+        paddingBottom: 20,
+    },
+    lottie: {
+        width: 150,
+        height: 150,
+        marginBottom: 20, // Aseguramos que haya espacio entre la animación y el texto
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+        fontSize: 16,
+    },
+    closeButton: {
+        marginTop: 10,
+    },
+
     assignedContainer: {
         flex: 1,
         padding: 16,
@@ -311,6 +388,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 10,
         fontFamily: 'Nunito-Bold',
+      color: 'gray' 
     },
     noBrigadasText: {
         fontSize: 18,
@@ -387,6 +465,12 @@ const styles = StyleSheet.create({
         color: "#ffffff",
         fontWeight: "bold",
         fontSize: 16,
+    },
+    assignedText:{
+        fontSize: 16,
+        color: "gray",
+        fontFamily: 'Nunito-SemiBold',
+
     },
 });
 

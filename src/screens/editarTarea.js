@@ -1,17 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PermissionsAndroid, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, ScrollView, Image, Alert, PermissionsAndroid, Platform, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colores from '../styles/colores';
 import { launchCamera } from 'react-native-image-picker';
 import { guardarTarea } from '../servicesStudent/api-servicesStuden';
 import { useNavigation } from '@react-navigation/native';
 import TextStyles from "../styles/texto";
+import ErrorModal from "../components/ErrorAlert";
+import SuccessModal from "../components/SuccesModal";
+import LottieView from 'lottie-react-native';
 const EditarTarea = ({ route }) => {
   const { tarea } = route.params;
   const navigation = useNavigation();
   const [observaciones, setObservaciones] = useState('');
   const [evidencia, setEvidencia] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [error, setError] = useState('');
+   const [modalAnimation, setModalAnimation] = useState(null); 
 
   // Utilizamos la lista de asistentes que ya está en la tarea
   const [asistentes, setAsistentes] = useState(
@@ -20,6 +28,28 @@ const EditarTarea = ({ route }) => {
       seleccionado: false, // Añadir el estado de selección
     }))
   );
+  const showErrorModal = (message) => {
+    setError(message);
+        setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+        setModalVisible(true);
+};
+
+const closeModal = () => {
+    setModalVisible(false);
+    setError(null);
+};
+
+const showSuccessModal = (message) => {
+  setSuccessMessage(message);
+  setModalAnimation(require('../assets/animaciones/check.json')); // Animación para éxito
+  setSuccessModalVisible(true);
+};
+
+const closeSuccessModal = () => {
+    setSuccessModalVisible(false);
+    setSuccessMessage('');
+    navigation.goBack(); 
+};
 
   const toggleSeleccionAsistente = (id) => {
     setAsistentes(asistentes.map(asistente => 
@@ -33,17 +63,17 @@ const EditarTarea = ({ route }) => {
       .map(asistente => asistente.usuario_id);
 
     if (!observaciones.trim()) {
-      Alert.alert("Error", "La observación es obligatoria.");
+      showErrorModal("La observación es obligatoria.");
       return;
     }
     if (idsAsistentesSeleccionados.length === 0) {
-      Alert.alert("Error", "Debes seleccionar al menos un asistente.");
+      showErrorModal("Debes seleccionar al menos un asistente.");
       return;
     }
 
     // Validar que la evidencia esté presente
     if (!evidencia || !evidencia.base64) {
-      Alert.alert("Error", "Es obligatorio subir una evidencia.");
+      showErrorModal("Es obligatorio subir una evidencia.");
       return;
     }
 
@@ -56,11 +86,11 @@ const EditarTarea = ({ route }) => {
         idsAsistentesSeleccionados,
         evidencia ? evidencia.base64 : null
       );
-      Alert.alert("Éxito", "La tarea se completó correctamente.");
-      navigation.goBack(); // Regresar a HomeStudent
+      showSuccessModal("La tarea se completó correctamente.");
+      
     } catch (err) {
       console.error("Error al guardar la tarea:", err);
-      Alert.alert("Error", "No se pudo completar la tarea. Intente nuevamente.");
+      showErrorModal("No se pudo completar la tarea. Intente nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -121,18 +151,14 @@ const EditarTarea = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color={Colores.primary} style={styles.backIcon} />
-          <Text>Atrás</Text>
-        </TouchableOpacity>
-       
-      </View>
+       {successModalVisible || modalVisible ? (
+        <View style={styles.overlay} />
+      ) : null}
 
       <View style={styles.form}>
         <Text style={styles.label}>Descripción</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.noEditable, { color: 'gray' }]} 
           value={tarea.descripcion}
           editable={false}
         />
@@ -142,7 +168,8 @@ const EditarTarea = ({ route }) => {
           style={[styles.input, styles.textArea]}
           value={observaciones}
           onChangeText={setObservaciones}
-          placeholder="Escribe observaciones..."
+          placeholder="Ingresa las observaciones..."
+          placeholderTextColor="gray"
           multiline
         />
 
@@ -150,7 +177,7 @@ const EditarTarea = ({ route }) => {
         {asistentes.map((asistente) => (
           <TouchableOpacity
             key={asistente.usuario_id}
-            style={styles.checkboxContainer}
+            style={[styles.checkboxLabel, { color: 'gray' }]}
             onPress={() => toggleSeleccionAsistente(asistente.usuario_id)}
           >
             <Icon
@@ -168,11 +195,12 @@ const EditarTarea = ({ route }) => {
           <TextInput
             style={styles.evidenciaInput}
             value={evidencia ? 'Imagen capturada' : ''}
-            placeholder="Selecciona un archivo..."
+            placeholder="Captura la evidencia"
+            placeholderTextColor="gray"
             editable={false}
           />
           <TouchableOpacity onPress={solicitarPermisoCamara}>
-            <Icon name="camera-outline" size={24} color={Colores.primary} />
+            <Icon name="camera-outline" size={24} colo="gray" />
           </TouchableOpacity>
         </View>
 
@@ -189,7 +217,54 @@ const EditarTarea = ({ route }) => {
             <Text style={TextStyles.boton}>Cancelar</Text>
           </TouchableOpacity>
         </View>
+         {/* Modal de Éxito */}
+         <Modal
+                animationType="slide"
+                transparent={true}
+                visible={successModalVisible}
+                onRequestClose={closeSuccessModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={false}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{successMessage}</Text>
+                        <TouchableOpacity onPress={closeSuccessModal} style={styles.closeButton}>
+                            <Icon name="close" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
+            {/* Modal de Error */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <LottieView
+                            source={modalAnimation}
+                            autoPlay
+                            loop={false}
+                            style={styles.lottie}
+                        />
+                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{error}</Text>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Icon name="close" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
       </View>
+      
+    
     </ScrollView>
   );
 };
@@ -202,11 +277,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+},
+modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    maxWidth: 300, // Limitar el tamaño del modal
+    paddingBottom: 20,
+},
+lottie: {
+    width: 150,
+    height: 150,
+    marginBottom: 20, // Aseguramos que haya espacio entre la animación y el texto
+},
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
   },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 16,
+},
   cancelarButton: {
     backgroundColor: 'gray',
     paddingVertical: 12,
@@ -251,6 +355,19 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
+    borderWidth: 1,
+    borderColor: '#000000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 16,
+    fontFamily: 'Nunito-SemiBold',
+
+    color: "black",
+   
+    marginBottom: 16,
+  },
+  noEditable: {
     borderWidth: 1,
     borderColor: '#000000',
     borderRadius: 8,
@@ -303,6 +420,15 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente
+    zIndex: 999, // Asegura que esté encima del contenido
   },
 });
 

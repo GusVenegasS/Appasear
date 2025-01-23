@@ -71,11 +71,13 @@ const App = () => {
             name="ContrasenaScreen"
             component={ContrasenaScreen}
             options={{
-              title: 'Reestablecer contraseña',
+              title: 'Contraseña',
               headerStyle: { backgroundColor: Colores.color1 },
               headerTitleAlign: 'center',
               headerTitleStyle: TextStyles.title1,
-              headerLeft: null,
+              headerBackImage: () => (
+                <Icon name="arrow-back" size={24} color="white" />
+              ),
             }}
           />
         </Stack.Navigator>

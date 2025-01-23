@@ -18,7 +18,7 @@ const TextStyles = StyleSheet.create({
   },
   boton: {
     fontSize: 16,
-    color: '#000000', // Cambia el color según tus necesidades
+    color: '#ffffff', // Cambia el color según tus necesidades
     fontFamily: 'Nunito-Semibold',
   },
   cuerpo: {
@@ -37,7 +37,7 @@ const TextStyles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
   },
   estadoCard: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#008EB6', // Cambia el color según tus necesidades
     fontFamily: 'Nunito-Regular',
   },
