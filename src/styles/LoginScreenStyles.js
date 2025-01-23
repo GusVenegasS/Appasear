@@ -46,6 +46,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',  // Asegura que los elementos estén alineados horizontalmente
     alignItems: 'center',  // Centra el contenido verticalmente
   },
+  inputContainer2: {
+    marginBottom: 20,
+    paddingHorizontal: 7,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
+    backgroundColor: '#d3d3d3',
+    flexDirection: 'row',  // Asegura que los elementos estén alineados horizontalmente
+    alignItems: 'center',  // Centra el contenido verticalmente
+  },
   textInput: {
     flex: 1,  // Hace que el TextInput ocupe todo el espacio disponible
     borderWidth: 1,

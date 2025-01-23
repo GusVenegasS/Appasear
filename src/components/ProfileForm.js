@@ -54,14 +54,14 @@ const ProfileForm = ({ navegarPress }) => {
     <View style={styles.formContainer}>
       {/* Campo de nombre no editable */}
       <Text style={textStyles.title3}>Nombre:</Text>
-      <View style={styles.inputContainer}>
+      <View style={styles.inputContainer2}>
         <TextInput value={nombre} editable={false} style={[textStyles.cuerpo, { flex: 1, paddingRight: 50 }]} />
         <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
       </View>
 
       {/* Campo de correo no editable */}
       <Text style={textStyles.title3}>Correo Electrónico:</Text>
-      <View style={styles.inputContainer}>
+      <View style={styles.inputContainer2}>
         <TextInput
           value={correo}
           editable={false}
