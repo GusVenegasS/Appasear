@@ -177,7 +177,7 @@ const closeSuccessModal = () => {
         {asistentes.map((asistente) => (
           <TouchableOpacity
             key={asistente.usuario_id}
-            style={styles.checkboxContainer}
+            style={[styles.checkboxLabel, { color: 'gray' }]}
             onPress={() => toggleSeleccionAsistente(asistente.usuario_id)}
           >
             <Icon
