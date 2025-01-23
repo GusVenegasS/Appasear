@@ -200,7 +200,7 @@ const closeSuccessModal = () => {
             editable={false}
           />
           <TouchableOpacity onPress={solicitarPermisoCamara}>
-            <Icon name="camera-outline" size={24} color={Colores.primary} />
+            <Icon name="camera-outline" size={24} colo="gray" />
           </TouchableOpacity>
         </View>
 
