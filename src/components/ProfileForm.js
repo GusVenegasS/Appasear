@@ -41,6 +41,10 @@ const ProfileForm = ({ navegarPress }) => {
       setIsError(false);
       setModalAnimation(require('../assets/animaciones/check.json'));
       setModalVisible(true);
+      setTimeout(() => {
+        setRefresh(!refresh);
+        setModalVisible(false);
+      }, 3000);
     } catch (error) {
       console.error(error);
       setMensaje('Ocurrió un problema al guardar los cambios.');

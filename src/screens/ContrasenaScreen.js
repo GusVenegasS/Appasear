@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import {requestPasswordReset} from '../services/api-auth-service'; // Importa el servicio de API
+import { View, Text, TextInput, TouchableOpacity, Alert, Modal, ScrollView } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Importa Ionicons
+import LottieView from 'lottie-react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import { requestPasswordReset } from '../services/api-auth-service'; // Importa el servicio de API
 import textStyles from '../styles/texto';
 
 const ContrasenaScreen = () => {
   const [correo, setCorreo] = useState('');
+  const [modalVisible, setModalVisible] = useState(false); // Estado para mostrar el modal
+  const [modalAnimation, setModalAnimation] = useState(null);
+  const [mensaje, setMensaje] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleChangePassword = async () => {
     try {
       const result = await requestPasswordReset(correo);
-      Alert.alert('Éxito', result.message);
+      setModalAnimation(require('../assets/animaciones/check.json'));
+      setIsError(false);
+      setMensaje('Se cambió la contraseña correctamente y se envió por correo electrónico.');
+      setModalVisible(true);
+      setImagenPerfil(fileContent); // Actualizar la imagen en el estado
+      setTimeout(() => {
+        setRefresh(!refresh);
+        setModalVisible(false);
+      }, 3000);
     } catch (error) {
-      console.error(error);
-      Alert.alert('Error', error || 'Ocurrió un error al cambiar la contraseña.');
+      setModalAnimation(require('../assets/animaciones/errorPerro.json'));
+      setMensaje('Error al actualizar la contraseña.');
+      setIsError(true);
+      setModalVisible(true);
     }
   };
 
@@ -34,6 +51,34 @@ const ContrasenaScreen = () => {
             <Text style={styles.buttonText}>Cambiar Contraseña</Text>
           </TouchableOpacity>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <LottieView
+                source={modalAnimation}
+                autoPlay
+                loop={!isError}
+                style={styles.lottie}
+              />
+              <Text style={[TextStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+              {isError && (
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Icon name="x" size={30} color="black" />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
