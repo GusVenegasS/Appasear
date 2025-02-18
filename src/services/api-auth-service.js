@@ -228,6 +228,10 @@ export const addStudent = async (usuarioId, nombre, correo, telefono, contraseñ
 
         return response.data; // Devuelve la respuesta, que puede incluir el mensaje de éxito
     } catch (error) {
-        throw new Error('Ocurrió un problema al agregar el estudiante');
+        if (error.response) {
+            throw new Error(error.response.data.message || 'Error desconocido');
+        } else {
+            throw new Error('No se pudo conectar con el servidor');
+        }
     }
 };

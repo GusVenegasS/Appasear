@@ -6,6 +6,7 @@ import Logo from '../components/Logo';
 import LoginForm from '../components/LoginForm';
 import { login } from '../services/api-auth-service';
 import LottieView from 'lottie-react-native';
+import TextStyles from '../styles/texto';
 import Icon from 'react-native-vector-icons/Feather';
 
 const LoginScreen = ({ navigation, onLogin }) => {
@@ -83,7 +84,7 @@ const LoginScreen = ({ navigation, onLogin }) => {
               loop={!isError}
               style={styles.lottie}
             />
-            <Text style={[styles.modalText, styles.textStyle]}>{mensaje}</Text>
+            <Text style={[TextStyles.cuerpo, styles.textStyle]}>{mensaje}</Text>
             {isError && (
               <TouchableOpacity
                 style={styles.closeButton}

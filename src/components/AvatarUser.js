@@ -60,7 +60,7 @@ const AvatarUser = () => {
           setTimeout(() => {
             setRefresh(!refresh);
             setModalVisible(false);
-        }, 3000); 
+          }, 3000);
         }
       }
     } catch (err) {
@@ -83,10 +83,10 @@ const AvatarUser = () => {
           source={
             imagenPerfil
               ? {
-                  uri: imagenPerfil?.startsWith('data:image/')
-                    ? imagenPerfil // Usa la imagen con prefijo existente.
-                    : `data:image/png;base64,${imagenPerfil}`, // Agrega prefijo si falta.
-                }
+                uri: imagenPerfil?.startsWith('data:image/')
+                  ? imagenPerfil // Usa la imagen con prefijo existente.
+                  : `data:image/png;base64,${imagenPerfil}`, // Agrega prefijo si falta.
+              }
               : require('../assets/images/avatar_placeholder.png') // Imagen predeterminada.
           }
         />
@@ -98,33 +98,33 @@ const AvatarUser = () => {
 
       {/* Modal para mostrar el mensaje */}
       <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <LottieView
-                            source={modalAnimation}
-                            autoPlay
-                            loop={!isError}
-                            style={styles.lottie}
-                        />
-                        <Text style={[TextStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
-                        {isError && (
-                            <TouchableOpacity
-                                style={styles.closeButton}
-                                onPress={() => setModalVisible(false)}
-                            >
-                                <Icon name="x" size={30} color="black" />
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                </View>
-            </Modal>
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <LottieView
+              source={modalAnimation}
+              autoPlay
+              loop={!isError}
+              style={styles.lottie}
+            />
+            <Text style={[TextStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+            {isError && (
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Icon name="x" size={30} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   lottie: {
     width: 150,
     height: 150,
-},
+  },
 });
 
 export default AvatarUser;
