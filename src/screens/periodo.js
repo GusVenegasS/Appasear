@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     View, Text, ScrollView, RefreshControl, TextInput, Button, StyleSheet, TouchableOpacity,
-    TouchableWithoutFeedback, Keyboard, Modal, Alert
+    TouchableWithoutFeedback, Keyboard, Modal, Alert, PermissionsAndroid, Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { Calendar } from 'react-native-calendars';
@@ -129,7 +129,36 @@ export default function VerificarPeriodo() {
         }
     };
 
+    const requestStoragePermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: "Permiso de almacenamiento",
+                        message: "La aplicación necesita acceso a tu almacenamiento para descargar archivos.",
+                        buttonPositive: "Aceptar"
+                    }
+                );
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
+        } else {
+            const result = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+            return result === RESULTS.GRANTED;
+        }
+    };
+
     const descargar = async () => {
+        const hasPermission = await requestStoragePermission();
+
+        if (!hasPermission) {
+            Alert.alert('Permiso denegado', 'No puedes descargar archivos sin otorgar permisos.');
+            return;
+        }
+
         try {
             const { periodo } = await AUTH.getUserDetails();
             const path = await API.descargarReporte(periodo);
