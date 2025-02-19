@@ -74,6 +74,12 @@ export default function VerificarPeriodo() {
         }
     };
 
+    const formatFecha = (fechaISO) => {
+        if (!fechaISO) return "";
+        const fecha = new Date(fechaISO);
+        return fecha.toISOString().split("T")[0]; // Obtiene solo YYYY-MM-DD
+    };
+
     const crear = async (fechaInicio, fechaFin) => {
         try {
             const { periodo } = await AUTH.getUserDetails();
@@ -271,14 +277,14 @@ export default function VerificarPeriodo() {
                     <View style={styles.card}>
                         <FechaInput
                             label="Fecha Inicio:"
-                            value={data.fechaInicio}
+                            value={formatFecha(data.fechaInicio)}
                             editable={false}
                             onPress={() => { }}
                             calendarVisible={false}
                         />
                         <FechaInput
                             label="Fecha Fin:"
-                            value={data.fechaFin}
+                            value={formatFecha(data.fechaFin)}
                             editable={false}
                             onPress={() => { }}
                             calendarVisible={false}
@@ -299,21 +305,21 @@ export default function VerificarPeriodo() {
                     <View style={styles.card}>
                         <FechaInput
                             label="Fecha Inicio:"
-                            value={data.fechaInicio}
+                            value={formatFecha(data.fechaInicio)}
                             editable={false}
                             onPress={() => { }}
                             calendarVisible={false}
                         />
                         <FechaInput
                             label="Fecha Fin:"
-                            value={data.fechaFin}
+                            value={formatFecha(data.fechaFin)}
                             editable={false}
                             onPress={() => { }}
                             calendarVisible={false}
                         />
                         <FechaInput
                             label="Fecha Finalización:"
-                            value={data.fechaFinalización}
+                            value={formatFecha(data.fechaFinalización)}
                             editable={false}
                             onPress={() => { }}
                             calendarVisible={false}
