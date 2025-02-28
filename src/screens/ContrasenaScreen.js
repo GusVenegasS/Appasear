@@ -15,19 +15,17 @@ const ContrasenaScreen = () => {
 
   const handleChangePassword = async () => {
     try {
-      const result = await requestPasswordReset(correo);
+      await requestPasswordReset(correo);
       setModalAnimation(require('../assets/animaciones/check.json'));
       setIsError(false);
       setMensaje('Se cambió la contraseña correctamente y se envió por correo electrónico.');
-      setModalVisible(true);
-      setImagenPerfil(fileContent); // Actualizar la imagen en el estado
+      setModalVisible(true); // Actualizar la imagen en el estado
       setTimeout(() => {
-        setRefresh(!refresh);
         setModalVisible(false);
       }, 3000);
     } catch (error) {
       setModalAnimation(require('../assets/animaciones/errorPerro.json'));
-      setMensaje('Error al actualizar la contraseña.');
+      setMensaje('Error, revise nuevamente el correo ingresado.');
       setIsError(true);
       setModalVisible(true);
     }
@@ -67,7 +65,7 @@ const ContrasenaScreen = () => {
                 loop={!isError}
                 style={styles.lottie}
               />
-              <Text style={[TextStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
+              <Text style={[textStyles.cuerpo, styles.modalText]}>{mensaje}</Text>
               {isError && (
                 <TouchableOpacity
                   style={styles.closeButton}
@@ -113,6 +111,27 @@ const styles = {
     height: 50,
     fontSize: 16,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   button: {
     backgroundColor: "#008EB6",
     borderRadius: 10,
@@ -142,6 +161,10 @@ const styles = {
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
+  },
+  lottie: {
+    width: 150,
+    height: 150,
   },
 };
 
