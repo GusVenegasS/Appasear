@@ -3,7 +3,7 @@
 import authService from "../services/auth-service";
 import { getToken } from "../services/auth-service"
 
-const API_URL = 'http://157.100.18.146:20252/api/student';
+const API_URL = 'http://69.62.67.33:50002';
 
 
 
