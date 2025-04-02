@@ -1,7 +1,7 @@
 import RNFS from 'react-native-fs';
 import AUTH from "../services/auth-service";
 
-const API_URL = 'http://69.62.67.33:50000';
+const API_URL = 'http://www.poliperros.ec/api-movil/admin';
 
 const crearPeriodo = async (fechaInicio, fechaFin, periodo) => {
     let b = {

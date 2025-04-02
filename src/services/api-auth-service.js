@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const BASE_URL = 'http://69.62.67.33:5001/api';
+const BASE_URL = 'http://www.poliperros.ec/api-movil/auth';
 
 const getAuthToken = async () => {
     const token = await AsyncStorage.getItem('authToken');
